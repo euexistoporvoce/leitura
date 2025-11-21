@@ -19,6 +19,9 @@
     <!-- AOS Animation CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Máscara para inputs (Telefone/CPF) -->
+    <script src="https://cdn.jsdelivr.net/npm/imask"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -27,7 +30,8 @@
                         'midnight': '#04060C', 
                         'gold': '#CBA135', 
                         'gold-hover': '#b38b2a',
-                        'card-bg': '#0B0F19'
+                        'card-bg': '#0B0F19',
+                        'success': '#22c55e'
                     },
                     fontFamily: {
                         serif: ['"Cinzel"', 'serif'],
@@ -84,6 +88,7 @@
             justify-content: center;
             padding: 16px;
             font-size: 14px;
+            cursor: pointer;
         }
         .btn-primary:hover { 
             background-color: #b38b2a; 
@@ -178,8 +183,8 @@
             100% { height: 20%; }
         }
 
-        /* --- ESTILOS DO MODAL DE LEITURA --- */
-        .chapter-modal {
+        /* --- ESTILOS DO MODAL DE LEITURA E CHECKOUT --- */
+        .chapter-modal, .checkout-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -195,10 +200,12 @@
             transition: opacity 0.3s ease;
             backdrop-filter: blur(5px);
         }
-        .chapter-modal.open {
+        .chapter-modal.open, .checkout-modal.open {
             opacity: 1;
             pointer-events: auto;
         }
+        
+        /* Container Padrão */
         .modal-container {
             background-color: #0B0F19;
             width: 90%;
@@ -213,9 +220,28 @@
             transform: translateY(20px);
             transition: transform 0.3s ease;
         }
-        .chapter-modal.open .modal-container {
+        
+        /* Container do Checkout (Mais largo se necessário em desktop) */
+        .checkout-container {
+            background-color: #0B0F19;
+            width: 95%;
+            max-width: 800px; /* Mais largo para parecer checkout de PC */
+            max-height: 90vh;
+            border: 1px solid #CBA135;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(203, 161, 53, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .chapter-modal.open .modal-container, .checkout-modal.open .checkout-container {
             transform: translateY(0);
         }
+
         .modal-header {
             padding: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -241,27 +267,76 @@
         }
         .close-btn:hover { transform: scale(1.1); color: white; }
 
+        /* Estilos Específicos do Checkout */
+        .checkout-timer {
+            background: #CBA135;
+            color: black;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+        }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        @media (min-width: 768px) {
+            .checkout-grid { grid-template-columns: 1.5fr 1fr; }
+        }
+        .checkout-input {
+            width: 100%;
+            background: #111625;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .checkout-input:focus { border-color: #CBA135; }
+        .checkout-summary {
+            background: #04060C;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 10px;
+            color: #22c55e;
+            margin-top: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- ÁUDIO DE FUNDO (Link Corrigido e Estável) -->
-    <!-- Música: "Emotional Piano" - Royalty Free -->
+    <!-- ÁUDIO DE FUNDO (Link Estável) -->
     <audio id="bg-music" loop>
-        <source src="https://euexistoporvoce.github.io/leitura/The_Lord_of_the_Rings.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_ff474e7169.mp3?filename=sad-piano-112488.mp3" type="audio/mpeg">
         Seu navegador não suporta áudio.
     </audio>
 
     <!-- BARRA SUPERIOR -->
     <div class="fixed top-0 left-0 w-full bg-[#04060C]/90 backdrop-blur-md border-b border-[#CBA135]/20 z-50 py-3 transition-all duration-300">
         <div class="mobile-container !min-h-0 !py-0 flex justify-between items-center">
-            <div class="flex items-center gap-2" data-aos="fade-right">
-                <i data-lucide="book" class="w-4 h-4 text-gold"></i>
-                <span class="font-serif text-white font-bold text-xs tracking-widest uppercase">Eu Existo <span class="text-gold">Por Você</span></span>
+            <div class="flex items-center gap-2 overflow-hidden" data-aos="fade-right">
+                <i data-lucide="book" class="w-4 h-4 text-gold flex-shrink-0"></i>
+                <!-- Texto do logo com ajuste de tamanho para não cortar em telas pequenas -->
+                <span class="font-serif text-white font-bold text-xs tracking-widest uppercase truncate md:text-xs text-[10px]">Eu Existo <span class="text-gold">Por Você</span></span>
             </div>
-            <a href="#oferta" class="bg-gold text-black font-bold text-[10px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition" data-aos="fade-left">
+            <div onclick="openCheckout('printed')" class="bg-gold text-black font-bold text-[10px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 ml-2" data-aos="fade-left">
                 Comprar Agora
-            </a>
+            </div>
         </div>
     </div>
 
@@ -283,9 +358,9 @@
 
             <div class="space-y-3 mb-8">
                 <div data-aos="zoom-in" data-aos-delay="400">
-                    <a href="#oferta" class="btn-primary gap-2">
+                    <div onclick="openCheckout('printed')" class="btn-primary gap-2 cursor-pointer">
                         QUERO MEU LIVRO <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
+                    </div>
                 </div>
                 <div data-aos="zoom-in" data-aos-delay="500">
                     <a href="#trailer" class="btn-outline gap-2">
@@ -320,12 +395,12 @@
                 <h3 class="title-hero text-2xl">O QUE DIZEM SOBRE A OBRA</h3>
             </div>
             
-            <!-- Trailer Oficial (Embed YouTube) -->
+            <!-- Trailer Oficial -->
             <div class="aspect-video w-full mb-8 border border-white/10 rounded shadow-2xl bg-black overflow-hidden" data-aos="zoom-in">
                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/1QqXw-SAkjM" title="Trailer do Livro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
 
-             <!-- Depoimentos (Shorts Embed) -->
+             <!-- Depoimentos -->
              <div class="max-w-xs mx-auto" data-aos="fade-up" data-aos-delay="100">
                 <p class="text-center text-gray-400 text-[10px] uppercase tracking-widest mb-4">Depoimentos</p>
                 <div class="aspect-[9/16] border border-white/10 rounded shadow-xl overflow-hidden bg-black">
@@ -343,7 +418,7 @@
             </p>
         </div>
 
-        <!-- CAPÍTULOS COM LEITURA (INTERATIVO) -->
+        <!-- CAPÍTULOS COM LEITURA -->
         <div class="mb-16">
             <div class="text-center mb-8" data-aos="fade-up">
                 <h3 class="title-hero text-2xl uppercase mb-2">FRAGMENTOS DE UMA VIDA</h3>
@@ -555,7 +630,7 @@
                         <p id="price-old" class="text-gray-600 text-xs line-through">109,83</p>
                     </div>
                     <div class="text-gold font-serif font-bold text-6xl leading-none">
-                        <span class="text-2xl align-top mr-1">R$</span><span id="price-current">64,69</span>
+                        <span class="text-2xl align-top mr-1">R$</span><span id="price-current">59,99</span>
                     </div>
                 </div>
 
@@ -563,9 +638,10 @@
                     <!-- Conteúdo inserido via JS -->
                 </div>
 
-                <a href="#" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform">
+                <!-- O botão agora abre o Modal de Checkout -->
+                <div onclick="openCheckout('printed')" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform cursor-pointer">
                     QUERO MEU LIVRO FÍSICO!
-                </a>
+                </div>
 
                 <div class="text-center text-[9px] text-gray-500 flex items-center justify-center gap-1 uppercase tracking-widest">
                     <i data-lucide="lock" class="w-3 h-3"></i> Pagamento 100% Seguro
@@ -632,7 +708,7 @@
         </footer>
     </div>
 
-    <!-- PLAYER DE MÚSICA FLUTUANTE (FUNCIONAL) -->
+    <!-- PLAYER DE MÚSICA FLUTUANTE -->
     <div id="floating-player" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 music-float px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 w-max" data-aos="fade-up" data-aos-offset="0" onclick="toggleMusic()">
         <div class="relative w-8 h-8 flex items-center justify-center bg-black/50 rounded-full border border-gold/30">
             <div class="music-wave absolute inset-0 bg-gold/20 rounded-full h-full w-full"></div>
@@ -645,123 +721,79 @@
         <i id="play-icon" data-lucide="play" class="w-3 h-3 text-white ml-2 fill-current"></i>
     </div>
 
-    <!-- MODAIS DE LEITURA -->
+    <!-- MODAIS DE LEITURA (Introdução e Capítulos 1-4) -->
     
-    <!-- Modal Introdução -->
-    <div id="modal-intro" class="chapter-modal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">INÍCIO</p>
-                    <h3 class="text-white font-serif text-xl">INTRODUÇÃO</h3>
-                </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-intro')"></i>
-            </div>
-            <div class="modal-body">
-                <p>Este livro não é apenas uma coleção de memórias; é um testemunho de como sobreviver às perdas e encontrar significado em meio ao caos. Quando a dor é profunda, a solidão nos assola como se ninguém pudesse entender. Eu me sentia assim até perceber que, ao compartilhar minha história, poderia dar voz a sentimentos e experiências silenciosas de muitos.</p>
-                <p>Aqui, você acompanhará minha jornada: de jovem apaixonado pela vida a pai que, de repente, perdeu o chão e precisou encontrar forças para criar sua filha. Esta não é uma história de contos de fadas, mas uma narrativa de força, do amor que sempre me moveu e da coragem que precisei para ser pai.</p>
-                <p>Talvez você encontre partes de si mesmo nestas páginas: nas lutas que parecem intransponíveis, nas vitórias inesperadas e nas lembranças que aquecem o coração, mesmo nos dias mais difíceis. Às vezes, são essas lembranças que nos salvam, e acredito que você verá o poder delas em cada parte desta história.</p>
-                <p>Meu nome é Ádamo, e o que você encontrará aqui é uma história real, que provavelmente ainda está se desenrolando enquanto lê cada Capítulo. Decidi escrevê-la pensando em quantas pessoas podem passar por situações semelhantes, que nos fazem querer desistir.</p>
-                <p>Acredito que todo sofrimento tem um propósito e que podemos transformar nossa dor em apoio para aqueles que, em momentos de tristeza, não enxergam a luz no fim do túnel. Desejo transformar minha tristeza, angústia e luta em inspiração para que você continue, resistindo ao caminho mais fácil e tentador, que sempre nos assedia. Passei por isso dia e noite, e confesso que, até hoje, esses pensamentos retornam. Não encontrei uma forma de apagá-los, mas descobri um antídoto diário para evitar que se tornem um mal maior. Peço que escute minha história e abra seu coração para entender a oportunidade que a vida nos oferece quando vivemos pelo amor em um mundo materialista que nos oprime.</p>
-                <p>Tudo o que você verá a partir de agora são relatos reais da minha vida, a qual você começará a explorar. É a história de luta de um homem viúvo que, após perder a esposa, criou sozinho sua filha de 11 meses, enfrentando diversas dificuldades, incluindo a oposição dos avós maternos, que tentaram tirá-la de mim. Você encontrará amor, determinação e superação, mas também luta, injustiças e sofrimento. É dessa combinação que desejo que você tire forças para continuar. Nada foi fácil, e esta história não foge à regra. Ela reflete a força e a fragilidade da natureza humana, provando que, mesmo nas situações mais difíceis, ainda podemos encontrar esperança e felicidade no amor verdadeiro.</p>
-                <p>Você não encontrará aqui uma história de viagens, festas ou felicidade material, como nas redes sociais. Sou uma pessoa simples, que batalha diariamente para viver da melhor forma possível dentro das minhas limitações, enfrentando angústias, dores, depressão e experimentando picos de alegria e felicidade. São esses momentos que revelam o segredo de viver o amor verdadeiro e dão força para seguir em frente. Ainda não sei qual será o final desta história — se será feliz como nos contos de fadas —, pois a vivo diariamente. Mas posso assegurar que, a cada dia, tento torná-la um conto de fadas. Cabe a mim viver o peso da realidade, mas também transformar esse peso em contos de fadas, dragões, princesas e castelos na vida da minha amada princesa. Ainda não lhe disse o nome dela, certo? Foi proposital, pois o citarei várias vezes ao longo da história. Afinal, que história de superação seria essa sem a personagem principal, como em todo bom conto de fadas... mas, neste caso, um conto da vida real.</p>
-            </div>
-        </div>
-    </div>
+    <div id="modal-intro" class="chapter-modal"><div class="modal-container"><div class="modal-header"><div><p class="text-gold text-[10px] font-bold uppercase tracking-widest">INÍCIO</p><h3 class="text-white font-serif text-xl">INTRODUÇÃO</h3></div><i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-intro')"></i></div><div class="modal-body"><p>Este livro não é apenas uma coleção de memórias; é um testemunho de como sobreviver às perdas e encontrar significado em meio ao caos...</p></div></div></div>
+    <div id="modal-cap1" class="chapter-modal"><div class="modal-container"><div class="modal-header"><div><p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 1</p><h3 class="text-white font-serif text-xl">AVENTURAS INFANTIS</h3></div><i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap1')"></i></div><div class="modal-body"><p>Antes de prosseguirmos com esta história, peço licença para voltar um pouco no tempo...</p></div></div></div>
+    <div id="modal-cap2" class="chapter-modal"><div class="modal-container"><div class="modal-header"><div><p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 2</p><h3 class="text-white font-serif text-xl">A DESCIDA SEM FREIO</h3></div><i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap2')"></i></div><div class="modal-body"><p>Memórias como está me trazem outras lembranças à mente. Lembro-me também de quando...</p></div></div></div>
+    <div id="modal-cap3" class="chapter-modal"><div class="modal-container"><div class="modal-header"><div><p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 3</p><h3 class="text-white font-serif text-xl">LEMBRANÇAS ESCOLARES</h3></div><i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap3')"></i></div><div class="modal-body"><p>Neste capítulo, recordo-me vagamente de alguns momentos na escola...</p></div></div></div>
+    <div id="modal-cap4" class="chapter-modal"><div class="modal-container"><div class="modal-header"><div><p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 4</p><h3 class="text-white font-serif text-xl">O ENCONTRO QUE MUDARIA TUDO</h3></div><i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap4')"></i></div><div class="modal-body"><p>Continuando a parte do último ano escolar, ali comecei a cultivar relacionamentos...</p></div></div></div>
 
-    <!-- Modal Cap 1 -->
-    <div id="modal-cap1" class="chapter-modal">
-        <div class="modal-container">
+    <!-- MODAL DE CHECKOUT (NOVO) -->
+    <div id="modal-checkout" class="checkout-modal">
+        <div class="checkout-container">
+            <!-- Topo com Timer -->
+            <div class="checkout-timer">
+                OFERTA EXPIRA EM: <span id="checkout-timer-display">10:00</span>
+            </div>
+            
             <div class="modal-header">
                 <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 1</p>
-                    <h3 class="text-white font-serif text-xl">AVENTURAS INFANTIS</h3>
+                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">FINALIZAR PEDIDO</p>
+                    <h3 class="text-white font-serif text-xl">DADOS DE COMPRA</h3>
                 </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap1')"></i>
+                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-checkout')"></i>
             </div>
-            <div class="modal-body">
-                <p>Antes de prosseguirmos com esta história, peço licença para voltar um pouco no tempo. Acredito que o passado molda o presente e, por isso, desejo compartilhar memórias que marcaram profundamente minha vida. Tenho certeza de que, ao final deste capítulo, você entenderá por que essas histórias são tão importantes. Meu nome é Ádamo, e esta é a parte da minha vida que chamo de memórias reais e recordações.</p>
-                <p>Já parou para pensar como nossas memórias são seletivas? Lembramos vagamente de momentos bons, enquanto os ruins parecem ser gravados com tinta permanente em nossas mentes. Lembro-me de poucos momentos felizes do dia a dia, mas guardo com nitidez os eventos marcantes que ocorreram quando eu tinha cerca de 10 anos. Nessa época, minha mãe correu atrás de mim com uma faca, tentando me matar. Se eu não tivesse me trancado no banheiro, possivelmente não estaria aqui contando esta história. (É estranho, mas, ao relatar isso para alguém, consigo visualizar a cena como se estivesse acontecendo novamente.)</p>
-                <p>Não me julgue; não me lembro ao certo do motivo, mas sei que não aprontei nada muito diferente do que uma criança faria. Também não julgue minha mãe; cada um tem seus motivos, e esse é um dos pontos principais aos quais quero que preste atenção. Sobre minha mãe, outras memórias me vêm à mente: como a de quando, ao completar 22 anos, ela me expulsou de casa por discutir com minha irmã por causa de um cachorro. Fui morar em uma pequena loja de dois cômodos. O local não tinha chuveiro nem cozinha; era composto por duas salas, onde ficavam meu computador e os produtos que eu vendia, e um banheiro apenas com o vaso sanitário. Ali começou uma parte da nossa história juntos: a da superação. Contarei essa história com mais detalhes nos próximos capítulos.</p>
-                <p>Outra lembrança é a de quando, durante esse tempo, minha avó sofreu um golpe de estelionato por telefone. Recebi uma ligação do meu tio me acusando de ser o autor do golpe; supostamente se identificaram com meu nome. No dia do golpe, eu havia passado dois dias trabalhando sem parar, mas estava feliz por ter consertado o equipamento de que precisava para continuar trabalhando. Fiquei sem entender nada quando meu tio me ligou me acusando; minha esposa explicou que trabalhamos na empresa duas noites seguidas sem dormir e que, mesmo que houvesse a possibilidade, eu nunca teria coragem de fazer isso. Confesso que foi uma acusação muito estranha. Felizmente algum tempo depois, os autores foram presos pela polícia enquanto aplicavam o mesmo golpe. Mesmo assim, nunca ouvi um pedido de desculpas. Conto isso para mostrar que todos sofremos injustiças, ainda que desmerecidas, e logo mais contarei coisas muito piores. Preste bem atenção agora: "Se eu ainda estou aqui, você também tem todos os motivos para estar."</p>
-                <p>Você reparou que citei apenas momentos ruins da minha vida, sem mencionar os bons? Sim, eu tive momentos bons: corria na rua, soltava pipa, jogava bola e até mesmo "béts" (dependendo da sua idade, talvez nem saiba o que é isso). O mundo gira tão rápido... Penso que, enquanto você está ouvindo isso agora, eu jogava "béts" e usávamos disquetes em um computador que hoje mal serve como sanduicheira. Antigamente, o foco era outro. Ninguém vivia no celular, até porque, naquela época, ligações com mais de uma hora poderiam facilmente custar o equivalente à parcela de um carro ou de uma casa. Lembro-me de uma cena engraçada que gostaria de compartilhar. Um dia, "hackeei" o sistema da Telefônica. Para quem não conhece, era uma empresa que instalava orelhões por todo o Brasil, para que as pessoas ligassem para casa quando estivessem na rua, já que nem sonhávamos com celulares. Como fiz isso? Peguei um daqueles telefones de discar com a mão e cortei os fios; fomos até um orelhão, puxamos os fios de trás, cortamos e... voilà! Podíamos fazer ligações ilimitadas para todo o país, sem gastar um crédito sequer. Surpreendente, não? Na época, éramos os hackers da era telefônica analógica. Mas, como tudo que é bom dura pouco, dois dias depois o técnico veio arrumar o orelhão. Não consideramos a possibilidade de alguém ter ligado para avisar que não estava funcionando, pois esquecemos de religar os fios de trás. Coisa de meninos, só ação e nada de raciocínio. (Acho que eu tinha uns 12 ou 13 anos.) Surgiu uma nova ideia: por que não descascar os fios em vez de cortá-los? E aí veio a "brilhante" ideia de queimar os fios para derreter o plástico, evitando o corte. Na teoria, parecia genial e, confesso, até impressionante, mas, novamente, sem qualquer raciocínio lógico, somente a prática. Começou bem; o fogo estava controlado, só que em seguida descobrimos que o plástico era inflamável e as chamas começaram a se espalhar para o orelhão. Em meio ao desespero, alguém teve a "genial" ideia de apagar o fogo com a mão. Já pode imaginar, né? Vamos pular essa parte, pois é um pouco vergonhosa, tenho que admitir. Acredite, tenho lembranças melhores para compartilhar no próximo capítulo.</p>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal Cap 2 -->
-    <div id="modal-cap2" class="chapter-modal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 2</p>
-                    <h3 class="text-white font-serif text-xl">A DESCIDA SEM FREIO</h3>
+            <div class="checkout-grid">
+                <!-- Coluna Esquerda: Formulário -->
+                <div class="p-2">
+                    <p class="text-white text-sm mb-4 font-bold">SEUS DADOS (Seguro e Criptografado)</p>
+                    <input type="text" id="checkout-name" placeholder="Nome Completo" class="checkout-input">
+                    <input type="email" id="checkout-email" placeholder="Seu Melhor E-mail" class="checkout-input">
+                    <input type="text" id="checkout-cpf" placeholder="CPF / CNPJ" class="checkout-input">
+                    <input type="tel" id="checkout-phone" placeholder="Celular (com DDD)" class="checkout-input">
+                    <input type="tel" id="checkout-whatsapp" placeholder="WhatsApp (com DDD)" class="checkout-input">
+                    
+                    <!-- Botão de Ação Final (Redirecionamento JavaScript) -->
+                    <div onclick="processPayment()" class="btn-primary w-full mt-6 text-base cursor-pointer">
+                        <i data-lucide="lock" class="w-4 h-4 mr-2"></i> IR PARA PAGAMENTO SEGURO
+                    </div>
+                    
+                    <div class="flex justify-center gap-4 mt-4 opacity-50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logomarca_Mercado_Pago.png" class="h-6 filter invert brightness-0">
+                        <img src="https://logodownload.org/wp-content/uploads/2019/06/pagseguro-logo-1.png" class="h-6 filter invert brightness-0">
+                    </div>
                 </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap2')"></i>
-            </div>
-            <div class="modal-body">
-                <p>Memórias como está me trazem outras lembranças à mente. Lembro-me também de quando, ainda criança, estávamos jogando "béts" na rua de casa, uma ladeira onde jogávamos no topo em uma rua sem saída. Nesse dia ensolarado, minha mãe me gritou no portão para ir almoçar; um dos amigos estava com uma bicicleta, então pensei em unir o útil ao agradável. (Naquela época, poucas pessoas tinham uma bicicleta; ao menos onde eu vivia, era outra realidade.)</p>
-                <p>Olhando para ele e sua bicicleta, tive uma ideia: por que não dizer que eu o levaria no cano para descermos juntos mais rápido? Inicialmente, ele hesitou, mas confesso que, desde criança, sou um pouco argumentativo. Não lembro ao certo o argumento, mas ele aceitou.</p>
-                <p>Meu amigo: "- Olha, a bicicleta está sem freio, vai devagar, ok?" Confirmei; ele sentou no cano e tudo parecia bem. Começamos a descer e, então, entrou a gravidade. Veja bem: ele estava sozinho antes, e agora estávamos os dois. Dobro do peso, dobro da velocidade na descida. Hoje entendo isso. Tarde? Sim, mas entendo.</p>
-                <p>Passando pela frente de sua casa, ele começou a gritar: "- Freia, aperta o freio!" Apertei os freios e, lembrei que... não havia freio. Eu gritei: "Está sem freio!" Ele falou: "Freia com o chinelo!" E eu, no desespero, coloquei o pé no pneu e... lembrei que estava descalço, estilo criança raiz. (Se você tiver mais de trinta anos, provavelmente entenderá.) Continuamos ladeira abaixo, gritando desesperadamente por nossas mães, até batermos de frente com um portão.</p>
-                <p>Levantei sem sentir dor, mas senti minha cabeça molhada; ao tocar no líquido, descobri que era meu sangue que estava jorrando. Era assustador, mas hoje acho até engraçado; não desmaiei nem me assustei. A pior parte? Avisaram minha família, e minha irmã mais velha desceu a rua correndo. Chegando ao local, a pedido do meu vizinho (que já estava lá me socorrendo), pediu à minha irmã para trazer algo para estancar meu sangue; deram a ela papel higiênico! Pois é, ela nem hesitou e colocou aquilo na minha cabeça. Papel higiênico com sangue quente vira uma "paçoca"; e isso eu aprendi ao chegar ao hospital. O médico gritou comigo: 'Quem colocou essa merda na sua cabeça?' Enquanto esfregava minha cabeça sob a água e outro costurava os pontos. Hoje, lembro com calafrios do "tratamento raiz" da época. Os médicos não eram politicamente corretos; falavam o que lhes vinha à mente. Naquela época era assim: ou você sobrevivia ou morria com mertiolate. Quem viveu isso sabe do que estou falando.</p>
-                <p>Ao final, tudo deu certo; ganhei cinco pontos na cabeça, uma cicatriz grande e 20 dias sem ir para a escola. Essa era a parte boa. Outra coisa interessante era que rachar a cabeça fazia de você uma celebridade instantânea. Várias pessoas me visitavam para ouvir a história e na escola, eu era a atração da vez. E, confesso, eu era um pouco pentelho, mas qual criança não é? Acho que você deve estar pensando: depois desta, ele com certeza sossegou. Vamos continuar lendo a seguir e você tire suas próprias conclusões sobre isso.</p>
-                <p>Me recordei de outra lembrança ainda mais antiga, como a do dia em que peguei todas as velas da minha mãe para "fazer uma fogueirinha" no porão. Acho que a fogueirinha ficou um pouco descontrolada, pois as labaredas começaram a subir até o teto. Imagine o pequeno desespero de um moleque tentando apagar o fogo com água... e só aumentava. Em meio ao desespero, comecei a gritar por socorro aos meus pais. Sabe, eu realmente não entendo como os indígenas de desenho animado conseguiam fazer sinal de fumaça com tanta eficiência. Todo pano que eu jogava no fogo queimava como se não houvesse amanhã. Aquele dia foi bem construtivo: rendeu um teto queimado do porão e uns três vergões de chinelo Ryder nas pernas. Naquela época, o chinelo não era uma Havaianas molinha; era duro como um tijolo e, se pegasse na cabeça, possivelmente era pior do que uma pancada de bicicleta no portão.</p>
-                <p>Bom, acho que já contei detalhes suficientes da minha vida, mas, se me permite, gostaria de compartilhar mais uma memória, e é bem possível que você ache está engraçada. Vamos avançar alguns anos, aproximadamente para os meus 15 anos, numa cidadezinha do interior de São Paulo chamada Sumaré. Meu primo morava lá, e eu costumava passar alguns dias com minha família nessa cidade durante as férias escolares. Agora que você já conhece o cenário, vamos continuar. Estávamos eu e meu bom primo, que, diga-se de passagem, era uma criança bem preguiçosa - logo você entenderá o motivo dessa descrição. Ali perto morava outro primo, e era comum irmos à casa dele para brincar. Naquela época, carro era artigo de luxo, e dinheiro era para a passagem do ônibus ("coisa de gente adulta para ir trabalhar"). Íamos de chinelo mesmo e andávamos cerca de 15 km para chegar à casa desse outro primo. Para facilitar a compreensão, vamos chamar o primo preguiçoso de Ale.</p>
-                <p>Naquele dia, Ale estava com muita preguiça de andar e teve a brilhante ideia de cortar caminho pela linha do trem. Bom, sejamos sinceros, ninguém gosta de andar 15 km para ir e mais 15 km para voltar, então resolvi aceitar a ideia. ("Parecia brilhante no momento, e agora, enquanto escrevo, me lembro de alguma história infantil em que o personagem pega o caminho mais curto e acaba se dando mal; guarde esta informação na sua mente. Mas vamos lá, o que importa aqui é a história, certo?") Estávamos eu e Ale descendo a rua em direção aos trilhos do trem. Vou narrar a conversa para que você possa entender e vivenciar esse momento comigo. Ale: "- Vamos lá, primo! Vamos cortar caminho pela linha do trem, assim não temos que andar todo o caminho." Eu: "- Fechou, primo! Vamos pela linha, assim chegamos mais rápido e podemos brincar mais tempo." Lá estávamos nós, andando pela linha, pegando pedras no caminho e jogando no mato, conversando, até que nos deparamos com um trem enorme parado à nossa frente. Vocês já devem imaginar que coisa boa daí não sairia, certo? Duas crianças e um trem só poderiam resultar em problema.</p>
-                <p>Quando estávamos passando pelo segundo vagão, Ale, aquela criança preguiçosa que mencionei antes, disse: Ale: "- Primo, tive uma ideia! Vamos chegar muito mais rápido." Eu: "Como assim, primo? O que você está pensando em fazer?" Ale: "- Vamos subir no trem e segurar no vagão; assim, quando ele parar lá na frente, na estação, a gente desce e já estará praticamente na casa do tio." Eu: "- Nem ferrando, primo! Não faço isso nem morto. E se cairmos do vagão?" Ale: "- Deixa de ser cagão, primo! Faço isso sempre, é fácil. Se você não for, eu vou." Eu: " - Tá bom, mas você faz isso sempre, né? Tem certeza de que ele para lá na frente?" Ale: "Claro, primo! Sobe e segura; assim que chegarmos na estação, é só descer de boa." Eu: " - Então, beleza." Após essa conversa, subimos no vagão e seguramos na escada. Eu, de blusa branca regata e shorts florido (na época, era moda) e com um celular Nokia primeira geração, o "tijolão". Em poucos minutos, o trem começou a partir. No início, deu um pouco de medo, mas, quando as coisas não dão errado de cara, você começa a gostar da aventura e aí mora o perigo real. O trem começou a andar e a ganhar velocidade. Estávamos pendurados na escada do vagão, duas crianças rindo e se divertindo, esperando o trem parar na estação de Sumaré, aproximadamente uns 9 km adiante.</p>
-                <p>Como nem tudo são flores, o plano, que parecia perfeito, desmoronou quando meu primo fez uma cara de desespero ao ver a estação passando ao nosso lado, com o trem já a uns 60 km/h. Ele olhou para mim e disse: Ale: "- Primo, fodeu! O trem passou reto pela estação. Meu Deus, estamos ferrados." (Pausa para descrever o sentimento naquele instante. Imagine-se, pendurado num trem a 60km/h, segurando uma escada, vestindo apenas shorts, camiseta regata e chinelo Havaianas. Tudo isso graças à ideia "brilhante" de alguém que garantia saber o que fazia. E, de repente, essa mesma pessoa olha para você com uma cara de "volta o cão arrependido, com as orelhas tão fartas, com o osso roído e o rabo entre as patas".) (Tá bom, tá bom. Confesso, essa frase é uma musiquinha do Chaves, mas não há forma melhor de descrever a cara de desespero dele naquele momento.) Se a expressão dele era de desespero, você precisava ver a minha. Eu congelei; fiquei viajando na minha mente, pensando: "Pera aí, não foi ele quem disse que isso era normal, que fazia sempre? Calma aí, meu Deus, fodeu! Estou ferrado, vou morrer!" E, comecei a expressar meus sentimentos, falando e gritando: “ Eu vou morrer!" Certa vez, ouvi dizer: pior do que está não fica. Pois bem, vou provar que nem tudo o que ouvimos é verdade. A situação em que nos encontrávamos ainda era das melhores; o que vem a seguir vai te surpreender.</p>
-                <p>Uns 10 km depois de passarmos da estação, meu primo, em meio ao nosso desespero frenético, teve outra ideia brilhante e disse: Ale: "- Primo, o trem passou reto pela estação; vamos ter que pular!" Eu: "- O quê? Você está louco? Não pulo nem ferrando desse trem! E se eu cair nos trilhos? Vou morrer." Ale: " Nada a ver, primo! Eu faço isso sempre. Eu pulo primeiro, você olha como eu faço e depois faz igual. Só tome cuidado para pular longe do trem, senão você cai embaixo dele." Mais uma pequena pausa. (Notou que ele, mais uma vez, teve uma ideia "brilhante" que ele "sempre fazia"? Só queria frisar essa informação antes de continuarmos.) Eu: “ Tá bom, primo. Já que você faz isso sempre, pula primeiro; eu vejo e depois faço igual." Lembro-me como se fosse ontem: fecho os olhos e vejo claramente a imagem do meu primo pulando, caindo de bunda no chão, fazendo uma cara de dor indescritível e rolando com as pernas para perto das rodas da linha do trem. (Não sei qual é a sua religião ou em que você acredita, mas ali foi um milagre.) Na minha mente, eu vi meu primo perder as duas pernas, mas, por um sopro divino ou um empurrão angelical, ele rolou de forma misteriosa para o lado, escapando de cair na linha do trem. Isso foi o suficiente para desencorajar qualquer pessoa em să consciência naquele momento. Agora, por um instante, coloque-se no meu lugar. Imagine você, já em meio ao desespero, olhando para alguém que, supostamente, era perito em pular de trens em movimento, fazendo isso "sempre", e olhar o perito saltando e caindo com uma expressão de dor insuportável, quase sendo cortado ao meio na linha do trem.</p>
-                <p>Não, o instinto de sobrevivência fala mais alto. Ao presenciar aquela cena, eu soube que nunca pularia dali de forma alguma. Pensei comigo: " Eu pular? Ele, com toda aquela "experiência” quase morreu!" (Se eu tentasse, com certeza não estaria aqui escrevendo esta história. Poderia até psicografar do plano espiritual, mas com absoluta certeza não deste plano.) Recuperando-se do tombo e aliviado por estar vivo, ele começou a me gritar: Ale: "- Pula! Pula, primo! Pula logo!" Eu me lembro apenas de olhar para ele e gritar: Eu: "- Nem ferrando! Vou parar na próxima estação, e você se vira para ir me buscar. Eu é que não vou pular e morrer." Agarrei firme a escada do vagão e segui para a próxima estação. Ali, sozinho, sem nunca ter feito aquilo antes e, com certeza, sem querer fazer novamente, estava eu, em um trem a uma velocidade de 60km/h. Essa velocidade pode não parecer muita dentro de um carro, mas em um vagão de trem, segurando em pé numa escada, usando chinelo Havaianas e sentindo os trancos dos vagões nas curvas... são momentos indescritíveis; só estando lá para entender. Nem comento o fato de ficar olhando para o chão enquanto o trem se movia. O que não sabíamos, mas percebi mais tarde nas curvas que o trem fazia, era que tínhamos pego um trem com pelo menos 100 vagões carregados de soja. Quando subimos, ele já estava parado na estação de Sumaré e, ao partir, já estava saindo da estação. Agora, o estrago estava feito e era hora de pensar numa solução.</p>
-                <p>Pensei comigo: "Vou esperar uns 20 minutos até a próxima estação e ligo para o meu primo, para ele vir me buscar com alguém; assim, dará tempo para que ele chegue na casa do meu tio e resolva isso." (Graças a Deus, naquela época, os celulares da Nokia tinham bateria que durava uns cinco dias; afinal, era só para ligações, SMS e o jogo da cobrinha. Alguém se lembra disso?) Mas, voltando... Passados vinte minutos, liguei e perguntei ao meu primo. (Diga-se de passagem, ele ficou o tempo todo ao lado do telefone para atender prontamente e não outra pessoa. Logo vocês entenderão o motivo dessa "gentileza".) Toda vez que eu ligava para a casa dos meus avós, ele dizia que já estavam resolvendo e que tinha contado para minha família. Fiquei mais tranquilo, mas, quando o trem passou direto pela próxima cidade, que me lembro vagamente de ter o nome de... Santa Gertrudes, liguei novamente desesperado. Segurando o celular com uma mão e a outra na escada, gritei: Eu: "- Primo, o trem não parou! Passou direto por uma cidade chamada Santa Gertrudes. Onde estou?" Ele respondeu que iria desligar e já me ligaria de volta. (Acho que é porque alguém estava ao lado dele e não poderia ouvir a conversa, pensando com outra visão nos dias de hoje.) Aguardei dez minutos e nada dele ligar. Enquanto isso, o trem passava por lugares desertos, por cima de pontes e sobre o rio; a tentação de pular no rio era enorme, mas, ao pensar na correnteza, a coragem desaparecia. Mantive-me no trem, pendurado por mais duas horas, e nada dele me ligar.</p>
-                <p>Finalmente, liguei novamente e, para minha surpresa, quem atendeu foi minha tia. Ela disse: Tia: "- Oi, Dan (ela me chamava assim). Onde você está? Por que não voltou com o Ale da casa do seu tio? Que horas você vem?" (Pausa para entender o problema. Pela conversa dela, deu para notar que ela nem sabia do que estava acontecendo, certo?) Pois bem, a verdade era essa: meu primo chegou à casa da minha avó como se nada estivesse acontecendo. Tomou café, assistiu desenho, tomou banho... (Acho que, na inocência de criança, imaginou que ninguém notaria minha ausência.) Mas seu plano falhou quando liguei justamente enquanto ele estava no banho, e minha tia atendeu. Eu: "- Tia, cadê o Ale? Avisa para ele que já passei por outra cidade." (Mais uma pausa para descrever a situação. Até aquele momento, eu já havia passado pelas cidades de Santa Bárbara d'Oeste, Cordeirópolis, Santa Gertrudes e estava a caminho de Rio Claro, aproximadamente a 77 km de Sumaré. E, fora eu e meu primo, ninguém sabia de nada. Ele simplesmente chegou à casa da minha avó e agiu normalmente.) Quando minha tia descobriu, ficou desesperada. Disse que ia desligar e ver o que poderia fazer, pois ele não havia contado nada. Enquanto isso, eu, pendurado no trem, comecei a enfrentar uma chuva fria e um vento gelado. Meus dedos dos pés estavam dormentes e meus braços com cãibras por ficar tanto tempo em pé na escada do vagão, segurando há mais de quatro horas. Uma água suja escorria no meu corpo e rosto ("o que vim a descobrir depois ser resíduo da carga de soja").</p>
-                <p>Após muito tempo, o trem passou por um conjunto de chácaras onde havia uma festa. Num ato de desespero, comecei a acenar e a gritar por socorro. Agora, vem a parte engraçada: ninguém conseguia ouvir o que eu falava; deduziram que eu estava apenas dando tchau lá de cima e começaram a acenar de volta; até ergueram uma criança para me ver no trem e também me dar tchau. Você consegue ter uma noção deste momento? Perdi as esperanças! Depois de quase quatro horas de viagem pendurado no trem e muito além de Rio Claro, o maquinista finalmente parou, e foi onde eu pulei e comecei a correr para o meio do mato, até encontrar a entrada de uma cidadezinha chamada Itirapina, a mais de 110 km de onde eu havia partido. Sujo, molhado, de chinelo Havaianas, calça florida e camiseta regata branca, encharcada de caldo preto. Cheguei na rodoviária e liguei para... meus avós de um orelhão, pois meu celular já estava sem bateria. Minha tia atendeu e disse: Tia: "- Dan, onde você está? Consegui falar na estação, e estão tentando contatar o maquinista para parar o trem. Avisei que tem uma criança pendurada no vagão." Eu: "- O trem parou, tia. Eu desci em uma cidade chamada Itirapina. Não tenho um centavo no bolso, nem passagem, nem nada."</p>
-                <p>Minha tia disse que falaria com meu tio para ir me buscar. Por volta das 22h, ele chegou e, claro, levei uma bronca enorme. Minha mãe me avisou que o trem levava carga de soja com destino ao Mato Grosso do Sul e que não pararia até chegar lá. Só parou porque minha tia conseguiu falar na estação. A vida é bela, não? Meu primo teve a "brilhante" ideia de cortar caminho pelo trilho, depois de subir no trem para ser mais rápido, pular e quase morrer. No final, ele só me deixaria ir para o Mato Grosso do Sul e, em sua mente genial, ninguém jamais sentiria minha falta. Isso serviu para eu aprender: nunca se deve ignorar os próprios instintos e acreditar cegamente nas conversas das pessoas. Desde esse dia, não aceitei mais nenhuma ideia "genial" do meu primo. Bom, ele levou uma bronca pela "cagada que fez, e eu fiquei de castigo. Acho que agora vocês já conhecem um pouco mais da minha infância raiz e das aventuras que passei. Vamos falar de outros traumas, agora alguns amorosos; afinal, nem tudo é partir em um trem rumo ao desconhecido. Que tal irmos para o próximo capítulo?</p>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal Cap 3 -->
-    <div id="modal-cap3" class="chapter-modal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 3</p>
-                    <h3 class="text-white font-serif text-xl">LEMBRANÇAS ESCOLARES</h3>
-                </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap3')"></i>
-            </div>
-            <div class="modal-body">
-                <p>Neste capítulo, recordo-me vagamente de alguns momentos na escola. Confesso que nunca fui muito popular e também não tinha jeito com as meninas. Éramos daquela turminha de meninos bobões e inocentes. Alguns momentos, porém, foram marcantes, como quando íamos para a escola acho que eu estava na sétima série - e, na hora da saída, havia um senhor que vendia chup-chup (mais conhecido hoje como geladinho ou sacolé). Lembro que ele usava óculos de aviador e tinha um bigodão, muito estranho para a época, mas gostávamos dele porque dava para trocar chup-chup por nossos passes de ônibus para depois irmos embora a pé. Parecia uma ideia genial para uma criança, mesmo que o caminho de casa fosse muito longo para ir a pé.</p>
-                <p>Nessa mesma época, comprávamos um saco enorme de salgadinhos de 1 kg para comermos na escola escondidos na hora do intervalo. Esperávamos todos saírem da sala para fechar a porta. O problema era quando alguém descobria; naquela época, as crianças eram meio "zumbis" com fome e não podiam ver você comendo algo que desejavam a qualquer custo. Lembro de nós segurando a porta com toda a força, enquanto tentavam abri-la a chutes, e meu amigo falava: "Come logo, come logo!", enquanto tentávamos manter a porta fechada. Aguentávamos o máximo possível, pois às vezes se juntavam quatro ou cinco moleques chutando do outro lado. Quando conseguiam abrir, era motivo para perder a amizade por alguns dias. Depois de isso acontecer umas cinco vezes, na hora do recreio ninguém mais saía da sala antes de revistar minha bolsa ou a do meu amigo, só para ter certeza de que não tínhamos salgadinho e não iríamos comer escondido deles. Pois é, como dizem, o crime não compensa, né?</p>
-                <p>Nessa época, eu era apaixonado por uma menina chamada Gisele. Ela era um pouco popular e nem de longe daria bola para um cara nada popular como eu, que lutava por um salgadinho de 1 kg de cinquenta centavos na hora do recreio. Lembro-me também de que toda turma sempre tem o garoto popular, aquele que gosta de bater nas pessoas, que joga bola muito bem comparado a outros que não jogam nada, né? Minha turma também tinha alguns assim naquela época, e hoje a Gisele, com certeza, já é mãe do filho de um deles, que, por sinal, ela engravidou naquela época.</p>
-                <p>Mas, fora a vida amorosa escolar, sempre fui alguém que os professores e diretores tratavam bem, e isso até que era bom. Depois de finalizar a oitava série nesta escola, mudei para outra, onde estudava meu melhor amigo da minha rua. Era um lugar bom, mas as brincadeiras da época, que permitiam dentro da escola, hoje assustariam qualquer um. Na hora do intervalo, sempre brincávamos de "passou levou". Você deve imaginar pelo nome que não é nada carinhoso; pois é, a brincadeira consistia em amassar uma latinha de refrigerante e ter um pique para se salvar, e viver com as pernas fechadas. Caso aquela simples latinha passasse entre suas pernas, o objetivo de todos ali brincando era te arrebentar na porrada até você conseguir chegar no pique. Sinceramente, ninguém naquela época tinha dó para medir forças. Lembro-me de apanhar muito; inclusive, um amigo chegou a levar um chute na barriga e ficou sem ar. Mas todo mundo saiu salvo e sem sequelas; pode até sair dolorido e roxo, mas todos vivos até então.</p>
-                <p>Coisas de criança raiz! E depois dizem que celulares não salvam vidas, né? Hoje, as crianças nem imaginam brincar assim; se alguma levar um chute, com certeza vai parar no hospital. Podemos dizer que minha geração era a geração "família busca pé". Isso foi em torno do primeiro ano do ginásio ou algo assim; só fui me tornar um pouco mais popular no segundo ou terceiro ano. Ali já tinha o respeito da galerinha "do mal" da escola. Eu era um pouco nerd, e poucas pessoas sabiam desenhar ou montar um site naquela época. Criei um site para minha turma, que logo ficou conhecido na escola inteira. Até mesmo os diretores e professores sabiam da existência dele, claro, com um conteúdo bem inútil, diga-se de passagem. Mas serviu para me deixar, a mim e a meus amigos, bem famosos na escola, e ali começaram a aparecer alguns casos amorosos dos quais eu viria a me arrepender um pouco mais tarde.</p>
-                <p>Ainda assim, não tinha muito jeito para conquistar as garotas; tanto que, de uma delas, por quem eu era apaixonado na época, acabei levando um fora ao tentar conquistá-la com um buquê de flores. No final, um garoto que vivia com as calças caídas no meio da bunda, no estilo "malaco", garoto este que apelidamos entre nossa turminha de "cara de burquinha", acabou namorando com ela e a engravidando. Acho que era tipo uma "maldição" para quem me desse um fora: se não ficasse comigo, ia engravidar de um "tranqueira". Filhos não são maldições, é apenas um modo de ilustrar sobre levar um fora e o pai acabar sendo outro e "metido a bandido". E assim foi a minha vida escolar. Ah, já estava quase me esquecendo: a camiseta de formatura da escola fui eu quem desenhou. Nessa época, acho que até tinha dom para algumas coisas. Lembro-me também de pegar uma máquina fotográfica velha da minha irmã ("naquela época, as máquinas eram de filme ainda"). Acho que metade das pessoas que ouvirem isso nunca vai imaginar como funciona. Explicando de uma forma mais grosseira: você comprava um filme para 12, 24 ou 36 poses e tinha direito a tirar essa quantidade de fotos. Você não fazia ideia de como sairia nas fotos até o dia de revelar. Tirar foto naquela época era muito emocionante; a expectativa de revelar era tão grande que fazíamos "vaquinha" para levar ao fotógrafo. ("Você não fazia isso na sua casa; tinha que ser um especialista.") Quando recebia as fotos, todos queriam ver e pediam uma cópia, a qual apenas o fotógrafo poderia fazer com o mesmo negativo. Era muito legal, uma época em que as pessoas davam valor às mínimas coisas. Tanto que quem é dessa época tem poucas fotos, mas guardadas em seu armário por toda a vida, enquanto nos dias de hoje, há milhares de fotos a cada segundo, e a pessoa nem liga se perder algumas delas. Ficou tudo muito banal e superficial, ainda mais com a chegada das tais redes sociais. No último ano escolar, comecei a namorar, mas deixarei isso para o próximo capítulo.</p>
-            </div>
-        </div>
-    </div>
+                <!-- Coluna Direita: Resumo -->
+                <div class="checkout-summary">
+                    <p class="text-gold text-xs font-bold uppercase tracking-widest mb-4">RESUMO DO PEDIDO</p>
+                    <div class="flex gap-4 mb-4">
+                        <!-- Capa do Livro Atualizada -->
+                        <img src="https://i.postimg.cc/Qt3jvfJK/Screenshot-20250609-161632-2-(1).png" class="w-16 h-24 object-cover rounded border border-gold/30">
+                        <div>
+                            <p id="checkout-product-title" class="text-white text-sm font-bold leading-tight mb-1">Livro Eu Existo Por Você</p>
+                            <p class="text-gray-400 text-xs">Autor: Ádamo F. Costa</p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-white/10 my-4 pt-4">
+                        <div class="flex justify-between text-sm text-gray-300 mb-2">
+                            <span>Preço:</span>
+                            <span class="line-through" id="checkout-old-price">R$ 109,83</span>
+                        </div>
+                        <div class="flex justify-between text-xl text-gold font-bold">
+                            <span>Total:</span>
+                            <span id="checkout-price">R$ 59,99</span>
+                        </div>
+                    </div>
 
-    <!-- Modal Cap 4 -->
-    <div id="modal-cap4" class="chapter-modal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">CAPÍTULO 4</p>
-                    <h3 class="text-white font-serif text-xl">O ENCONTRO QUE MUDARIA TUDO</h3>
+                    <div class="secure-badge">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> 
+                        Compra 100% Segura
+                    </div>
                 </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-cap4')"></i>
-            </div>
-            <div class="modal-body">
-                <p>Continuando a parte do último ano escolar, ali comecei a cultivar relacionamentos um pouco mais duradouros. Mas não foi pela escola ou pelas amigas que realmente me envolvi com alguém. Naquela época, não havia redes sociais ou aplicativos de relacionamento. Você entrava em um chat com internet discada. Sim, tínhamos internet discada, e quem viveu esse tempo lembra-se do barulhinho da internet se conectando. O problema é que a internet era conectada ao fio do telefone e, quando se estava online, ninguém conseguia ligar; o telefone ficava mudo, fazendo um barulho horrível. Assim, você era facilmente pego pelos seus pais na internet, mesmo fingindo estar dormindo. Quantas vezes não criei a estratégia de fingir que estava dormindo e, quando meus pais iam dormir, eu acessava a internet e ficava em chats de amizade e relacionamento conversando com as pessoas? E quantas vezes meu pai, já conhecendo meu truque, não acordou de madrugada, pegou o telefone na sala e viu que eu estava conectado? Aí ele subia para o quarto, batia na porta, eu desligava o computador correndo e fingia dormir. Ele ia lá e arrancava o fio do telefone do computador. Era complicada a vida da juventude dos anos 90; você achando que a vida é difícil agora, não é mesmo?</p>
-                <p>Dessas inúmeras vezes, lembro-me de conhecer uma garota com quem comecei a trocar ideia. Naquela época, você tinha que ser bom no "xaveco ; não havia como ficar postando fotos de viagens ou carrões. Imagina ter um carrão, então? Você fazia encontros às escuras, marcava com a pessoa e ia conhecê-la na hora. Quem viveu esse tempo vai se lembrar: toda garota com quem você conversava era morena de olhos verdes ou loira de olhos azuis. Acho que foi a partir dessa época que começaram a existir os filtros imaginários das redes sociais de hoje. Pois bem, depois de alguns encontros, realmente conheci uma garota com um nome estranho, que não citarei aqui, mas ela realmente tinha olhos azuis; só não era loira, era até bem bonita. Um dia, conversando com ela, a prima também veio conversar conosco e, disso, pegou meu contato e começou a falar comigo sem contar para a garota. Inclusive, certo dia, ela veio até a minha casa me buscar de carro, e eu nem carro tinha na época. Saímos, nos conhecemos e acabamos nos beijando. Você nem imagina o tamanho da raiva que a prima dela ficou por ter sido "passada para trás".</p>
-                <p>Desse relacionamento, acabamos nos conhecendo melhor e começamos a namorar. Foi um relacionamento bem duradouro, em média, acho que por três anos. Lembro-me de que o pai dela não gostava muito de mim. Não entendo o porquê, mas hoje, sendo pai, entendo que não gostaria de nenhum namorado da minha filha. Acho que isso desgastou um pouco nosso relacionamento até chegarmos ao término. Quando você não se envolve com a família, não se sente bem-vindo onde está; isso influencia bastante. Mudando um pouco de assunto, lembro-me de estarmos na rede da casa da minha namorada. Era uma parte alta, onde a garagem ficava na parte de baixo, e, de cima do muro, você podia ver a rua. Então, uma noite, deitados na rede e com meu carro na rua, um Uno ano 95 ("bom, não era bem meu, era da minha irmã, mas ela deixava eu usar às vezes"), deitados na rede com sono, ouço uma buzina. Diga-se de passagem, era uma buzina muito parecida com a do meu carro. Levanto da rede e vou em direção ao muro olhar o carro. Quando olho, vejo as duas portas abertas e o farol aceso e penso: "Não acredito, deixei o carro com as portas abertas e o farol aceso." Muito lerdo, não é mesmo? Vejo umas perninhas mexendo dentro do carro e percebo que estão tentando roubar. E, como o Tarzan, grito alto: "Uouuuuu!" Os ladrões, sem entender nada, saem correndo desesperados. Pela primeira vez na história, alguém espanta ladrões no grito. Depois disso, nunca mais deixei o carro na rua.</p>
-                <p>Namoramos por um bom tempo, sempre curtindo e saindo juntos. Ela vinha em casa, eu ia na casa dela. Lembro-me também de quando íamos a baladas; afinal, éramos jovens, meio que um Eduardo e Mônica da música do Legião Urbana. Ela fazia faculdade e tinha dinheiro, enquanto eu, "duro", não fazia faculdade. Eu precisava suprir essa diferença para poder acompanhar a vida de balada de um adolescente. E como eu poderia fazer isso sem gastar dinheiro? Aí começou meu primeiro empreendimento. Eu sabia fazer sites e tinha uma máquina digital, pois trabalhava na Microcamp de Sumaré com meu salário "milionário" de seiscentos e oitenta reais e sem registro. Meus dois primeiros salários foram para comprar uma máquina digital e um celular de modelo flip chamado Samsung Voicer. Eu já tinha tudo o que precisava; só precisava de dois amigos mais "vagas que adoravam balada e estava tudo perfeito. Montei um site, que na época chamei de Agito Noturno, e fomos às baladas oferecendo tirar fotos das festas e colocar no site gratuitamente, em troca de entrarmos nas baladas de graça e podermos beber à vontade.</p>
-                <p>Confesso que aquela foi uma das melhores ideias da minha vida: não ter um tostão furado no bolso e poder sair de terça a domingo para baladas, além de várias pessoas te conhecerem e fazerem vários amigos e amigas. Agora, me diga: como alguém que entregava flores para uma menina da escola e levava fora chegou ao ponto de ficar famoso em baladas? Eu chegava ao local e os seguranças diziam: "Pode deixa entrar, é a galera do Agito Noturno, são gente boa." E curtíamos a festa o tempo todo. Eu ainda me sentia meio diferente; meus amigos aproveitavam para paquerar meninas e beber, enquanto eu, meio que inocentemente, levava aquilo a sério e mantinha o foco no trabalho. Sempre me senti alguém que não nasceu para trabalhar para os outros; também nunca fui bom o suficiente em qualquer coisa, sempre "quebrando o galho" e me virando. Mas, nessa época, eu era bem descolado, fazia amigos facilmente. Com o tempo, isso começou a virar um empecilho no meu namoro; meu sogro não aceitava, e hoje em dia concordo com ele. Mas acho que ele não entendia; eu via aquilo como uma mega corporação futuramente. O que, diga-se de passagem, não virou, mas não foi por falta de sonhar; foi exatamente porque virou "zona". Meus amigos só queriam bagunça e "pegar" a mulherada com a roupa do Agito Noturno. Resolvi parar com tudo, mas foi uma época maravilhosa.</p>
-                <p>Chegávamos a ir até mesmo em camarotes de artistas famosos na época, como Fala Mansa ou cantoras internacionais que se apresentavam na balada mais "top" de Campinas, a antiga Usina Royal. Saíamos para baladas de graça todos os dias, e isso sendo "feios”... tá, não tão feio; era um rapaz que dava para o gasto na época, mas, como dizia um certo comercial, eu não era uma Brastemp, mas estava bom. Ali, em meio à vida de festas e dando aulas na Microcamp, onde muitas alunas tinham "tara" por professores, era difícil não cair em tentação, mas me mantive firme ainda assim. Até o dia em que vi a futura mãe da minha filha; ela tinha aulas de inglês aos domingos, e sim, eu tinha que trabalhar aos domingos na Microcamp. Vida de professor era só fachada; ganhava-se muito mal e tinha uma vida de cão. (Apenas uma pausa para ressalva: eu ia todos os dias de carro de Campinas para Sumaré, que era onde eu dava aula.) (Você pode ter uma noção do quanto sobrava do meu salário pagando a gasolina? Sim, eles não pagavam vale-transporte. Acho que me sobravam por mês uns quatrocentos reais para gastar comigo e meu namoro.)</p>
-                <p>Mas, voltando para a parte de conhecer a mãe da minha filha. Não consigo explicar, mas quando a vi sorrindo através do vidro naquele domingo, foi amor à primeira vista. Acho que poucos vão saber o que é isso hoje em dia, mas foi algo que tirou o fôlego. Não entendo, não sei explicar, mas, da mesma forma que me apaixonei por ela naquele momento, ela também se apaixonou por mim. Foi um encontro de almas gêmeas, se isso existir. Mas como resolver o problema do meu namoro atual a esta altura do campeonato? Já não sentia mais o que sentia antigamente; o namoro já estava desgastado antes mesmo de conhecer Camila. Depois de um tempo, resolvi terminar com minha namorada e tentar a sorte com aquela por quem me apaixonei instantaneamente. Certo dia, pedi à professora que falasse com sua aluna e dissesse que eu gostava dela e, para minha surpresa, a professora disse que sua aluna também estava sempre me olhando e queria me conhecer. Naquele mesmo dia, pedi que ela não fosse embora e ficasse ali para conversarmos. Com cinco minutos de conversa, não me aguentei e a agarrei na sala de reunião dos professores, beijando-a ali mesmo. Foi algo instintivo; nunca teria feito isso em toda a minha vida, mas foi mais forte.</p>
-                <p>Ali começa realmente minha história de vida com a mãe da minha filha e mulher da minha vida: de um encontro em pleno domingo, sem qualquer propósito, e de um beijo que marcou os dois. É louco pensar nisso neste momento. Lembro-me da cena até hoje, lembro-me do gosto dos lábios dela beijando os meus. Confesso que bate uma angústia em saber que não terei a oportunidade de sentir seus beijos novamente, e o quanto me faz falta hoje. Aquele simples beijo gerou uma vida com dezesseis anos de relacionamento, destes, quatro sendo viúvo. Escrevo isso quase chorando, peço desculpas se esta parte ficar um pouco sentimental. A partir daquele dia, senti que algo havia realmente mudado na minha vida. Eu pensava nela o dia todo, queria falar com ela o tempo todo. Falávamos por horas ao telefone, e ali ficava a outra parte do meu salário que não ia para a gasolina; servia para pagar parte da conta de telefone para o meu pai. Lembro-me de colocar músicas românticas para ela ao telefone, como Creed, entre outras. Era um namoro tão diferente de tudo que vivi até aqueles dias, e tenho certeza de que nunca conseguirei viver novamente. Confesso que é um buraco no coração que somente a presença da minha filha consegue tampar às vezes.</p>
-                <p>Lembro-me de sempre ir buscá-la no meu horário de saída; íamos a um condomínio de um amigo do trabalho, onde havia uma pracinha. Ficávamos ali por horas abraçados, fazendo planos sem nenhum centavo no bolso. Quando íamos embora e eu estava de carro, sempre tinha uma cena muito engraçada; não imagino como ela não ficou careca. Pois é, sem eu perceber, enquanto me beijava, ela aproveitava para tirar fios de seu cabelo e jogar por todas as partes do meu carro. ("Eu sempre estranhei achar cabelos dela do nada mesmo, mas nunca liguei muito.") Até que, um dia, ela me contou que fazia isso e explicou que, se eu estivesse mentindo, que eu não tinha namorada além dela, era para eu me "ferrar". Foram os melhores momentos da minha vida. Certa vez, lembro-me, em um domingo de muito sol e calor, estávamos lá, neste condomínio, na pracinha, namorando, quando falei para irmos tomar um sorvete. Ela aceitou meu convite e, então, fomos para a padaria. Chegando à padaria, pedi que escolhesse o sorvete que desejasse. Ela pegou um sorvete que custava apenas um real, o mais barato de todos. No momento, fiquei indignado e falei para que escolhesse outro mais caro. Ela me disse que sorvete era tudo igual e que servia apenas para refrescar do calor. Disfarçadamente, abri minha carteira para ver quanto dinheiro eu tinha, pois minha intensão era trocar o sorvete dela pelo mais caro. Para minha surpresa, em meio a tanto amor, esqueci que eu era um professor de informática que ganhava um salário horrível. Naquele dia, eu tinha apenas um real e cinquenta centavos na carteira. Ela me perguntou: "- E você, qual vai pegar? Vai pegar o mais caro mesmo?" Olhei para ela e disse: "Quer saber? Não estou com calor. Vou levar só o seu mesmo." Peguei dos meus um real e cinquenta centavos, o valor de um real, e paguei o sorvete. Agradeci a Deus por ela ser quem era, o que me poupou de uma grande vergonha naquele dia. Foi o momento mais marcante da minha vida. Ali vi que havia conhecido a mãe da minha filha e o amor da minha vida. Mas, mais uma vez, os problemas com os sogros surgiram como um obstáculo. Eles não gostavam de mim porque o ex dela vivia indo à casa deles, dizendo que estava sofrendo e queria reatar. De alguma forma, o pai dela descobriu meu número de telefone. Mas essa história fica para o próximo capítulo.</p>
             </div>
         </div>
     </div>
@@ -787,7 +819,6 @@
         const musicIcon = document.getElementById('music-icon');
         let isPlaying = false;
 
-        // Define o volume inicial para 50%
         bgMusic.volume = 0.5;
 
         function toggleMusic() {
@@ -798,30 +829,37 @@
                 floatingPlayer.classList.remove('music-playing');
                 isPlaying = false;
             } else {
-                // Tenta tocar e lida com possíveis bloqueios do navegador
                 bgMusic.play().then(() => {
                     musicStatus.innerText = "Pausar Música";
                     playIcon.setAttribute('data-lucide', 'pause');
                     floatingPlayer.classList.add('music-playing');
                     isPlaying = true;
                 }).catch(error => {
-                    console.log("Autoplay bloqueado ou erro ao tocar: ", error);
-                    // Pode adicionar um feedback visual se necessário
+                    console.log("Autoplay bloqueado.");
                 });
             }
             lucide.createIcons();
         }
 
-        // Tentativa de autoplay ao interagir com a página
         document.body.addEventListener('click', function() {
             if (!isPlaying) {
                 toggleMusic();
             }
         }, { once: true }); 
 
-        // Lógica de Troca de Preços (Abas)
+        // --- CONFIGURAÇÃO DOS LINKS DE PAGAMENTO ---
+        // Substitua os links abaixo pelos seus links reais do Mercado Pago ou PagSeguro
+        const paymentLinks = {
+            printed: "https://link-do-mercado-pago-livro-fisico.com", 
+            ebook: "https://link-do-mercado-pago-ebook.com"         
+        };
+        
+        let currentProductType = 'printed'; // Estado inicial
+
+        // Lógica de Preços (Abas)
         function switchPrice(type) {
-            // Atualiza visual das abas
+            currentProductType = type; // Atualiza o tipo selecionado
+            
             document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + type).classList.add('active');
 
@@ -831,11 +869,12 @@
             const priceFeatures = document.getElementById('price-features');
             const priceBtn = document.getElementById('price-btn');
 
+            priceBtn.setAttribute('onclick', `openCheckout('${type}')`);
+
             if (type === 'printed') {
-                // Conteúdo Livro Impresso
                 priceTitle.innerText = "LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK";
                 priceOld.innerText = "109,83";
-                priceCurrent.innerText = "64,69";
+                priceCurrent.innerText = "59,99";
                 priceBtn.innerText = "QUERO MEU LIVRO FÍSICO!";
                 
                 priceFeatures.innerHTML = `
@@ -845,9 +884,8 @@
                     <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="gift" class="w-4 h-4 text-gold"></i> Marcador de Páginas Exclusivo</p>
                 `;
             } else {
-                // Conteúdo E-book
                 priceTitle.innerText = "E-BOOK COMPLETO + AUDIO BOOK";
-                priceOld.innerText = "39,99"; // Preço âncora sugerido
+                priceOld.innerText = "39,99";
                 priceCurrent.innerText = "19,99";
                 priceBtn.innerText = "QUERO MEU E-BOOK!";
                 
@@ -858,10 +896,9 @@
                     <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Sem Custo de Frete</p>
                 `;
             }
-            lucide.createIcons(); // Re-render icons
+            lucide.createIcons();
         }
 
-        // Carregar conteúdo inicial da aba de preço
         switchPrice('printed');
 
         function switchTab(store, url, btnText) {
@@ -879,7 +916,76 @@
             btnLink.href = url;
         }
 
-        // Funções para abrir e fechar os modais de leitura
+        // Lógica do Modal de Checkout
+        let checkoutTimer;
+        
+        function startCheckoutTimer() {
+            let duration = 60 * 10; 
+            const display = document.querySelector('#checkout-timer-display');
+            
+            clearInterval(checkoutTimer);
+            checkoutTimer = setInterval(function () {
+                let minutes = parseInt(duration / 60, 10);
+                let seconds = parseInt(duration % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--duration < 0) {
+                    duration = 0;
+                    clearInterval(checkoutTimer);
+                }
+            }, 1000);
+        }
+
+        function openCheckout(type) {
+            currentProductType = type;
+            const modal = document.getElementById('modal-checkout');
+            const productTitle = document.getElementById('checkout-product-title');
+            const productPrice = document.getElementById('checkout-price');
+            const productOldPrice = document.getElementById('checkout-old-price');
+
+            // Configura o conteúdo do modal
+            if (type === 'printed') {
+                productTitle.innerText = "Livro Impresso (Capa Flexível) + Audio Book";
+                productPrice.innerText = "R$ 59,99";
+                productOldPrice.innerText = "R$ 109,83";
+            } else {
+                productTitle.innerText = "E-book Completo (PDF/EPUB) + Audio Book";
+                productPrice.innerText = "R$ 19,99";
+                productOldPrice.innerText = "R$ 39,99";
+            }
+
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('open');
+                startCheckoutTimer(); 
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Processar Pagamento e Redirecionar
+        function processPayment() {
+            // Validação simples
+            const name = document.getElementById('checkout-name').value;
+            const email = document.getElementById('checkout-email').value;
+            const cpf = document.getElementById('checkout-cpf').value;
+            const phone = document.getElementById('checkout-phone').value;
+
+            if (!name || !email || !cpf || !phone) {
+                alert("Por favor, preencha todos os campos para continuar.");
+                return;
+            }
+
+            // Simulação de envio (Aqui você conectaria com um backend real se tivesse)
+            // Como é estático, vamos apenas redirecionar para o link de pagamento correto
+            
+            const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
+            window.location.href = finalLink;
+        }
+
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.style.display = 'flex';
@@ -896,13 +1002,24 @@
                 modal.style.display = 'none';
             }, 300);
             document.body.style.overflow = 'auto';
+            
+            if(modalId === 'modal-checkout') {
+                clearInterval(checkoutTimer);
+            }
         }
 
         window.onclick = function(event) {
-            if (event.target.classList.contains('chapter-modal')) {
+            if (event.target.classList.contains('chapter-modal') || event.target.classList.contains('checkout-modal')) {
                 closeModal(event.target.id);
             }
         }
+
+        // Máscaras de Input
+        document.addEventListener('DOMContentLoaded', function () {
+            const phoneMask = IMask(document.getElementById('checkout-phone'), { mask: '(00) 00000-0000' });
+            const whatsappMask = IMask(document.getElementById('checkout-whatsapp'), { mask: '(00) 00000-0000' });
+            const cpfMask = IMask(document.getElementById('checkout-cpf'), { mask: '000.000.000-00' });
+        });
     </script>
 </body>
 </html>
