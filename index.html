@@ -51,12 +51,14 @@
 
     <style>
         /* Estilos Globais */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
         body { 
             background-color: #04060C; 
             color: #e2e8f0; 
             font-family: 'Lato', sans-serif;
-            overflow-x: hidden; /* Impede scroll lateral */
-            width: 100%;
         }
 
         /* Scrollbar */
@@ -73,7 +75,7 @@
             min-height: 100vh;
             padding: 0 20px;
             position: relative;
-            overflow-x: hidden; /* Reforço contra scroll lateral */
+            overflow-x: hidden;
         }
 
         /* Botões */
@@ -92,7 +94,7 @@
             padding: 16px;
             font-size: 14px;
             cursor: pointer;
-            white-space: nowrap; /* Evita quebra de texto no botão */
+            white-space: nowrap;
         }
         .btn-primary:hover { 
             background-color: #b38b2a; 
@@ -123,7 +125,7 @@
         }
 
         /* Tipografia */
-        .title-hero { font-family: 'Cinzel', serif; color: white; line-height: 1.2; word-wrap: break-word; }
+        .title-hero { font-family: 'Cinzel', serif; color: white; line-height: 1.2; word-wrap: break-word; hyphens: auto; }
         .title-gold { font-family: 'Cinzel', serif; color: #CBA135; font-style: italic; word-wrap: break-word; }
 
         /* Elementos */
@@ -324,8 +326,7 @@
 </head>
 <body>
 
-    <!-- ÁUDIO DE FUNDO (Lord of the Rings - Link Direto) -->
-    <!-- Adicionado ?raw=true para garantir que o GitHub sirva o arquivo de áudio corretamente -->
+    <!-- ÁUDIO DE FUNDO (Link Definitivo) -->
     <audio id="bg-music" loop>
         <source src="https://github.com/euexistoporvoce/leitura/blob/main/The_Lord_of_the_Rings.mp3?raw=true" type="audio/mpeg">
         Seu navegador não suporta áudio.
@@ -333,15 +334,15 @@
 
     <!-- BARRA SUPERIOR -->
     <div class="fixed top-0 left-0 w-full bg-[#04060C]/90 backdrop-blur-md border-b border-[#CBA135]/20 z-50 py-3 transition-all duration-300">
-        <div class="mobile-container !min-h-0 !py-0 flex justify-between items-center max-w-full overflow-hidden">
-            <div class="flex items-center gap-2 overflow-hidden flex-1" data-aos="fade-right">
+        <div class="mobile-container !min-h-0 !py-0 flex justify-between items-center max-w-full">
+            <div class="flex items-center gap-2 flex-1 min-w-0" data-aos="fade-right">
                 <i data-lucide="book" class="w-4 h-4 text-gold flex-shrink-0"></i>
-                <!-- Texto ajustável para não quebrar layout -->
-                <span class="font-serif text-white font-bold text-[10px] sm:text-xs tracking-widest uppercase truncate w-full">
+                <!-- Texto ajustável com truncate para não estourar o layout -->
+                <span class="font-serif text-white font-bold text-[10px] sm:text-xs tracking-widest uppercase truncate block">
                     Eu Existo <span class="text-gold">Por Você</span>
                 </span>
             </div>
-            <!-- Botão fixo sem quebra -->
+            <!-- Botão fixo sem quebra de linha -->
             <div onclick="openCheckout('printed')" class="bg-gold text-black font-bold text-[10px] px-3 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 ml-2 whitespace-nowrap" data-aos="fade-left">
                 Comprar Agora
             </div>
@@ -354,9 +355,9 @@
         <!-- HERO -->
         <div class="text-center mb-12">
             <p class="text-gold text-[10px] uppercase tracking-[0.3em] font-bold mb-4" data-aos="fade-down">UMA JORNADA REAL</p>
-            <!-- Ajuste de tamanho de fonte para mobile -->
-            <h1 class="title-hero text-2xl sm:text-3xl mb-2 break-words" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
-            <h2 class="title-gold text-xl sm:text-2xl mb-8 break-words" data-aos="fade-up" data-aos-delay="200">E DEPOIS TE DAR FORÇAS PARA CONTINUAR.</h2>
+            <!-- Ajuste de tamanho de fonte e quebra de palavra para mobile -->
+            <h1 class="title-hero text-2xl sm:text-3xl mb-2" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
+            <h2 class="title-gold text-xl sm:text-2xl mb-8" data-aos="fade-up" data-aos-delay="200">E DEPOIS TE DAR FORÇAS PARA CONTINUAR.</h2>
 
             <div class="flex text-left mb-10 max-w-sm mx-auto" data-aos="fade-up" data-aos-delay="300">
                 <div class="w-1 bg-gold mr-4 flex-shrink-0"></div>
@@ -556,14 +557,14 @@
                     <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500">
                     <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
                         <p class="title-serif text-lg">O CASAMENTO</p>
-                        <p class="text-[10px] text-gold italic">"Ela era a noiva mais linda que já vi em toda a minha vida."</p>
+                        <p class="text-sm text-gold italic line-clamp-2">"Ela era a noiva mais linda que já vi em toda a minha vida."</p>
                     </div>
                 </div>
                 <div class="aspect-video relative rounded-sm overflow-hidden border border-white/10 group" data-aos="fade-up">
-                    <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/FamiliaUnida.jpg?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500">
+                    <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/FamiliaUnida.jpg" class="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500">
                     <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
-                        <p class="title-serif text-lg">PAI E FILHA</p>
-                        <p class="text-[10px] text-gold italic">"Ela dormia no meu colo enquanto eu lidava com um turbilhão de sentimentos."</p>
+                        <p class="title-serif text-lg">FAMÍLIA UNIDA</p>
+                        <p class="text-sm text-gold italic line-clamp-2">"Ela dormia no meu colo enquanto eu lidava com um turbilhão de sentimentos."</p>
                     </div>
                 </div>
             </div>
@@ -988,20 +989,9 @@
                 return;
             }
             
-            // Mensagem pronta para WhatsApp
-            const message = `Olá, gostaria de finalizar a compra do livro *${currentProductType === 'printed' ? 'IMPRESSO (R$ 64,69)' : 'DIGITAL (R$ 19,99)'}*.\n\n*Meus Dados:*\nNome: ${name}\nEmail: ${email}\nCPF: ${cpf}\nTelefone: ${phone}`;
-            
-            // Link do WhatsApp (Substitua SEU_NUMERO pelo número real, ex: 5511999999999)
-            // Como não tenho seu número, deixei um placeholder. O ideal é você colocar seu número aqui.
-            const whatsappNumber = "5519991950005"; 
-            const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-
-            // Redireciona para o WhatsApp com os dados preenchidos
-            window.open(whatsappLink, '_blank');
-            
-            // Opcional: Redirecionar também para o link de pagamento direto se preferir
-             const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
-             // window.location.href = finalLink; // Descomente se quiser abrir o link de pagamento direto em vez do Zap
+            // Redireciona direto para o link de pagamento configurado
+            const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
+            window.open(finalLink, '_blank');
         }
 
         function openModal(modalId) {
