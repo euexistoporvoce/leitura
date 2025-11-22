@@ -5,24 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Eu Existo Por Você | Ádamo F. Costa</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- AOS Animation CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Máscara para inputs (Telefone/CPF) -->
     <script src="https://cdn.jsdelivr.net/npm/imask"></script>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -279,7 +273,7 @@
             overflow-y: auto;
             max-height: 90vh;
         }
-        .account-container { max-width: 800px; }
+        .account-container { max-width: 900px; }
 
         .open .modal-container, .open .checkout-container, .open .auth-container, .open .account-container {
             transform: translateY(0);
@@ -349,18 +343,15 @@
 </head>
 <body>
 
-    <!-- ÁUDIO DE FUNDO (Link Definitivo GitHub) -->
     <audio id="bg-music" loop>
         <source src="https://github.com/euexistoporvoce/leitura/blob/main/The_Lord_of_the_Rings.mp3?raw=true" type="audio/mpeg">
         Seu navegador não suporta áudio.
     </audio>
 
-    <!-- BARRA SUPERIOR -->
     <div class="fixed top-0 left-0 w-full bg-[#04060C]/95 backdrop-blur-md border-b border-[#CBA135]/20 z-50 py-3 transition-all duration-300 shadow-lg">
         <div class="mobile-container !min-h-0 !py-0 flex justify-between items-center max-w-full">
             <div class="flex items-center gap-2 flex-1 min-w-0 mr-2" data-aos="fade-right">
                 <i data-lucide="book" class="w-5 h-5 text-gold flex-shrink-0"></i>
-                <!-- Texto ajustável com truncate para não estourar o layout -->
                 <div class="flex flex-col">
                     <span class="font-serif text-white font-bold text-[11px] sm:text-xs tracking-widest uppercase truncate">
                         Eu Existo
@@ -372,19 +363,17 @@
             </div>
             
             <div class="flex items-center gap-3">
-
-
-
                 
-                <!-- Botão Minha Conta (Só aparece se logado) -->
                 <div id="btn-account" onclick="openAccount()" class="hidden text-gold hover:text-white cursor-pointer text-xs font-bold flex flex-col items-center">
                     <i data-lucide="user" class="w-5 h-5"></i>
                     <span class="text-[9px] mt-1">PERFIL</span>
                 </div>
-<div id="btn-admin" onclick="openAdminPanel()" class="hidden text-red-500 hover:text-red-400 cursor-pointer text-xs font-bold flex flex-col items-center border border-red-900 p-1 rounded">
-    <i data-lucide="shield" class="w-5 h-5"></i>
-    <span class="text-[9px] mt-1">ADMIN</span>
-</div>
+
+                <div id="btn-admin" onclick="openAdminPanel()" class="hidden text-red-500 hover:text-red-400 cursor-pointer text-xs font-bold flex flex-col items-center border border-red-900 p-1 rounded">
+                    <i data-lucide="shield" class="w-5 h-5"></i>
+                    <span class="text-[9px] mt-1">ADMIN</span>
+                </div>
+
                 <div onclick="checkLoginAndBuy('printed')" class="bg-gold text-black font-bold text-[11px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 whitespace-nowrap shadow-md" data-aos="fade-left">
                     Comprar Agora
                 </div>
@@ -392,10 +381,8 @@
         </div>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <div class="mobile-container pt-24 pb-32">
 
-        <!-- HERO -->
         <div class="text-center mb-12">
             <p class="text-gold text-xs uppercase tracking-[0.3em] font-bold mb-4" data-aos="fade-down">UMA JORNADA REAL</p>
             <h1 class="title-hero text-2xl sm:text-3xl mb-4 leading-snug" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
@@ -421,7 +408,6 @@
                 </div>
             </div>
 
-            <!-- Marketplaces -->
             <div class="text-center border-t border-white/10 pt-8" data-aos="fade-in" data-aos-delay="600">
                 <p class="text-xs text-gray-500 uppercase tracking-widest mb-6">DISPONÍVEL EM:</p>
                 <div class="flex flex-wrap justify-center gap-6 mb-6">
@@ -443,7 +429,6 @@
             </div>
         </div>
   
-        <!-- VÍDEO TRAILER E DEPOIMENTOS -->
         <div id="trailer" class="mb-16">
             <div class="text-center mb-8" data-aos="fade-up">
                 <p class="text-gold text-xs uppercase tracking-widest font-bold mb-2">IMPACTO REAL</p>
@@ -462,7 +447,6 @@
             </div>
         </div>
 
-        <!-- DEDICATÓRIA -->
         <div class="text-center mb-16 px-6 border-y border-white/5 py-12" data-aos="fade-up">
             <i data-lucide="heart" class="w-8 h-8 text-gold mx-auto mb-6 opacity-70"></i>
             <h3 class="text-xs text-gold uppercase tracking-[0.2em] mb-6">DEDICATÓRIA</h3>
@@ -471,7 +455,6 @@
             </p>
         </div>
 
-        <!-- CAPÍTULOS COM LEITURA -->
         <div class="mb-16">
             <div class="text-center mb-8" data-aos="fade-up">
                 <h3 class="title-hero text-2xl uppercase mb-2">FRAGMENTOS DE UMA VIDA</h3>
@@ -479,7 +462,6 @@
             </div>
 
             <div class="space-y-6">
-                <!-- Introdução -->
                 <div onclick="openModal('modal-intro')" class="bg-[#0B0F19] p-6 border-l-4 border-l-white rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left">
                     <div class="flex justify-between items-start">
                         <div>
@@ -492,7 +474,6 @@
                     <p class="text-xs text-white mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Introdução <i data-lucide="arrow-right" class="w-4 h-4"></i></p>
                 </div>
 
-                <!-- Cap 1 -->
                 <div onclick="openModal('modal-cap1')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="50">
                     <div class="flex justify-between items-start">
                         <div>
@@ -504,16 +485,12 @@
                     </div>
                     <p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p>
                 </div>
-                <!-- Cap 2 -->
                 <div onclick="openModal('modal-cap2')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="100"><div class="flex justify-between items-start"><div><p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 2</p><h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">A DESCIDA SEM FREIO</h4><p class="text-sm text-gray-400 leading-relaxed">A jornada no trem e as loucuras que fazemos quando crianças.</p></div><i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i></div><p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p></div>
-                <!-- Cap 3 -->
                 <div onclick="openModal('modal-cap3')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="200"><div class="flex justify-between items-start"><div><p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 3</p><h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">LEMBRANÇAS ESCOLARES</h4><p class="text-sm text-gray-400 leading-relaxed">Da inocência às primeiras paixões e as brincadeiras da época.</p></div><i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i></div><p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p></div>
-                <!-- Cap 4 -->
                 <div onclick="openModal('modal-cap4')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="300"><div class="flex justify-between items-start"><div><p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 4</p><h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">O ENCONTRO QUE MUDARIA TUDO</h4><p class="text-sm text-gray-400 leading-relaxed">Amor à primeira vista e o início da jornada com a mãe da minha filha.</p></div><i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i></div><p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p></div>
             </div>
         </div>
 
-        <!-- PERSONAGENS -->
         <div class="mb-16">
             <div class="text-center mb-8" data-aos="fade-down">
                 <h3 class="title-hero text-xl uppercase mb-2">QUEM VIVE NESTAS PÁGINAS</h3>
@@ -552,7 +529,6 @@
             </div>
         </div>
 
-        <!-- MOMENTOS INESQUECÍVEIS -->
         <div class="mb-12">
             <div class="text-center mb-6" data-aos="fade-up">
                 <h2 class="title-serif text-xl">MOMENTOS INESQUECÍVEIS</h2>
@@ -576,7 +552,6 @@
             </div>
         </div>
 
-        <!-- COMPARTILHE SUA HISTÓRIA -->
         <div class="bg-[#0B0F19] p-8 text-center border-l-4 border-gold mb-16 shadow-lg" data-aos="fade-right">
             <h3 class="title-hero text-xl mb-4">COMPARTILHE SUA HISTÓRIA</h3>
             <p class="text-gray-400 text-base italic mb-6 leading-relaxed">
@@ -586,7 +561,6 @@
             <p class="text-[10px] text-gray-600 uppercase tracking-widest">No Instagram</p>
         </div>
 
-        <!-- AUTOR -->
         <div class="text-center mb-16">
             <div class="w-32 h-32 mx-auto rounded-full p-1 border border-gold/30 mb-4" data-aos="zoom-in">
                 <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/adamo.jpg" alt="Autor" class="w-full h-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
@@ -598,7 +572,6 @@
                 "Não escrevi com a mente, nem apenas com o coração; elas nasceram da força da minha alma."
             </p>
             
-            <!-- REDES SOCIAIS -->
             <div class="flex flex-wrap justify-center gap-6 mt-8 text-[10px] font-bold text-gray-500 tracking-widest" data-aos="fade-in" data-aos-delay="300">
                 <a href="https://api.whatsapp.com/send/?phone=5519991950005" target="_blank" class="hover:text-gold flex flex-col items-center gap-2 transition-colors w-16">
                     <div class="w-10 h-10 rounded-full bg-green-900/30 flex items-center justify-center border border-green-700"><i data-lucide="phone" class="w-5 h-5 text-green-500"></i></div><span>WHATS</span>
@@ -618,7 +591,6 @@
             </div>
         </div>
 
-        <!-- OFERTA PRINCIPAL (Preços Interativos) -->
         <div id="oferta" class="mb-16">
             <div class="text-center mb-8" data-aos="fade-up">
                 <h2 class="title-hero text-2xl uppercase mb-2">ADQUIRA SUA CÓPIA</h2>
@@ -626,7 +598,6 @@
                 <p class="text-gray-500 text-sm mt-4 px-6">Escolha a versão ideal para você.</p>
             </div>
 
-            <!-- Seletor de Abas -->
             <div class="flex justify-center gap-2 mb-6 max-w-xs mx-auto" data-aos="fade-down">
                 <div onclick="switchPrice('printed')" id="tab-printed" class="price-tab active rounded-l-sm text-sm py-3">
                     <i data-lucide="book" class="w-4 h-4"></i> LIVRO IMPRESSO
@@ -636,7 +607,6 @@
                 </div>
             </div>
 
-            <!-- BOX DE PREÇO -->
             <div class="price-box relative shadow-lg" data-aos="zoom-in-up" data-aos-duration="1000">
                 <p id="price-title" class="text-gray-400 text-xs uppercase tracking-widest mb-4 text-center font-bold">LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK</p>
                 
@@ -651,10 +621,8 @@
                 </div>
 
                 <div id="price-features" class="space-y-4 mb-8 px-2">
-                    <!-- Conteúdo inserido via JS -->
-                </div>
+                    </div>
 
-                <!-- O botão agora abre o Modal de Checkout -->
                 <div onclick="checkLoginAndBuy('printed')" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform cursor-pointer text-base py-4 font-bold shadow-lg">
                     QUERO MEU LIVRO FÍSICO!
                 </div>
@@ -665,7 +633,6 @@
             </div>
         </div>
 
-        <!-- GARANTIA -->
         <div class="text-center mb-12 px-6" data-aos="fade-up">
             <div class="inline-block p-4 rounded-full bg-gold/5 mb-4 border border-gold/20">
                 <i data-lucide="shield-check" class="w-8 h-8 text-gold mx-auto"></i>
@@ -676,7 +643,6 @@
             </p>
         </div>
 
-        <!-- FAQ -->
         <div class="space-y-2 mb-16 border-t border-white/5 pt-10">
             <div class="faq-item px-4 py-5 cursor-pointer rounded" onclick="this.classList.toggle('faq-open')" data-aos="fade-up">
                 <div class="flex justify-between items-center">
@@ -713,7 +679,6 @@
             </div>
         </div>
         
-        <!-- FOOTER -->
         <footer class="text-center text-[10px] text-gray-600 uppercase tracking-widest pb-24 border-t border-white/5 pt-10" data-aos="fade-in">
             <p class="text-white font-serif text-sm mb-2">Eu Existo Por Você</p>
             <p class="mb-6">© 2024 Ádamo F. Costa</p>
@@ -724,7 +689,6 @@
         </footer>
     </div>
 
-    <!-- PLAYER DE MÚSICA FLUTUANTE -->
     <div id="floating-player" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 music-float px-5 py-3 rounded-full shadow-2xl flex items-center gap-4 w-max cursor-pointer border border-gold/30 bg-[#04060C]/90 backdrop-blur-md" data-aos="fade-up" data-aos-offset="0" onclick="toggleMusic()">
         <div class="relative w-10 h-10 flex items-center justify-center bg-black/50 rounded-full border border-gold/30">
             <div class="music-wave absolute inset-0 bg-gold/20 rounded-full h-full w-full"></div>
@@ -737,30 +701,6 @@
         <i id="play-icon" data-lucide="play" class="w-4 h-4 text-white ml-2 fill-current"></i>
     </div>
 
-    <!-- MODAL DE AUTH (ADMINISTRADOR) -->
-<div id="modal-admin" class="account-modal">
-    <div class="account-container" style="max-width: 900px;"> <div class="modal-header bg-red-900/20 border-b border-red-500/30">
-            <div>
-                <p class="text-red-500 text-[10px] font-bold uppercase tracking-widest">ÁREA RESTRITA</p>
-                <h3 class="text-white font-serif text-xl">GERENCIAR PEDIDOS</h3>
-            </div>
-            <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-admin')"></i>
-        </div>
-        <div class="p-6">
-            <div class="flex gap-2 mb-6">
-                <input type="text" id="admin-search" placeholder="Buscar por e-mail..." class="checkout-input mb-0" onkeyup="filterOrders()">
-                <button onclick="loadAllOrders()" class="btn-primary w-auto px-6 py-2 text-xs">ATUALIZAR</button>
-            </div>
-
-            <div id="admin-content" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-                <p class="text-gray-400 text-center">Carregando pedidos...</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-    
-    <!-- MODAL DE AUTH (LOGIN/CADASTRO) -->
     <div id="modal-auth" class="auth-modal">
         <div class="auth-container">
             <div class="modal-header">
@@ -789,28 +729,128 @@
         </div>
     </div>
 
-    <!-- MODAL DE MINHA CONTA -->
     <div id="modal-account" class="account-modal">
-        <div class="account-container">
+        <div class="account-container" style="max-width: 900px; height: 90vh;">
             <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">OLÁ, LEITOR</p>
-                    <h3 class="text-white font-serif text-xl">MEUS PEDIDOS</h3>
+                <div class="flex items-center gap-3">
+                    <i data-lucide="user-circle" class="w-8 h-8 text-gold"></i>
+                    <div>
+                        <p class="text-gold text-[10px] font-bold uppercase tracking-widest">MINHA CONTA</p>
+                        <h3 id="user-name-display" class="text-white font-serif text-lg leading-none">CARREGANDO...</h3>
+                    </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <button onclick="logout()" class="text-red-500 text-xs font-bold hover:text-red-400">SAIR</button>
-                    <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-account')"></i>
-                </div>
+                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-account')"></i>
             </div>
-            <div class="p-6" id="account-content">
-                <p class="text-gray-400 text-center">Carregando seus pedidos...</p>
+
+            <div class="flex flex-col md:flex-row h-full overflow-hidden">
+                <div class="w-full md:w-64 bg-[#04060C] border-r border-gray-800 p-4 flex flex-col gap-2 shrink-0">
+                    <button onclick="switchUserTab('orders')" id="btn-tab-orders" class="text-left px-4 py-3 rounded text-sm font-bold bg-[#111625] text-gold border border-gold/30 hover:bg-[#1a2030] transition-colors flex items-center gap-2">
+                        <i data-lucide="package"></i> MEUS PEDIDOS
+                    </button>
+                    <button onclick="switchUserTab('data')" id="btn-tab-data" class="text-left px-4 py-3 rounded text-sm font-bold text-gray-400 hover:text-white hover:bg-[#111625] transition-colors flex items-center gap-2">
+                        <i data-lucide="file-text"></i> MEUS DADOS
+                    </button>
+                    <div class="mt-auto pt-4 border-t border-gray-800">
+                        <button onclick="logout()" class="text-red-500 text-xs font-bold hover:text-red-400 flex items-center gap-2 px-4">
+                            <i data-lucide="log-out" class="w-4 h-4"></i> SAIR DA CONTA
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 bg-[#0B0F19] relative">
+                    
+                    <div id="tab-user-orders" class="space-y-4">
+                        <h4 class="text-white font-serif text-xl mb-4 border-b border-gray-800 pb-2">HISTÓRICO DE PEDIDOS</h4>
+                        <div id="account-orders-list" class="space-y-3">
+                            </div>
+                    </div>
+
+                    <div id="order-details-view" class="hidden absolute inset-0 bg-[#0B0F19] z-20 p-6 overflow-y-auto transform transition-transform">
+                        <button onclick="hideOrderDetails()" class="mb-4 text-xs text-gold flex items-center gap-1 hover:underline">
+                            <i data-lucide="arrow-left" class="w-3 h-3"></i> VOLTAR PARA LISTA
+                        </button>
+                        
+                        <div id="order-details-content">
+                            </div>
+                    </div>
+
+                    <div id="tab-user-data" class="hidden space-y-4">
+                        <h4 class="text-white font-serif text-xl mb-4 border-b border-gray-800 pb-2">MEUS DADOS CADASTRAIS</h4>
+                        <form id="user-data-form" onsubmit="saveUserData(event)">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs text-gray-500 uppercase">Nome Completo</label>
+                                    <input type="text" id="profile-name" class="checkout-input mt-1" required>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500 uppercase">CPF</label>
+                                    <input type="text" id="profile-cpf" class="checkout-input mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500 uppercase">Telefone / WhatsApp</label>
+                                    <input type="text" id="profile-phone" class="checkout-input mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500 uppercase">E-mail (Não alterável)</label>
+                                    <input type="email" id="profile-email" class="checkout-input mt-1 bg-black/50 text-gray-500 border-gray-800 cursor-not-allowed" readonly>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-xs text-gray-500 uppercase">Endereço Completo</label>
+                                    <textarea id="profile-address" class="checkout-input mt-1 h-24 resize-none" placeholder="Rua, Número, Bairro, Cidade, CEP..."></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary mt-4 w-auto px-8 py-3 text-sm">SALVAR ALTERAÇÕES</button>
+                        </form>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 
-     <!-- MODAIS DE LEITURA -->
-    
-    <!-- Modal Introdução -->
+    <div id="modal-admin" class="account-modal">
+        <div class="account-container" style="max-width: 1000px; height: 90vh;">
+            <div class="modal-header bg-red-900/20 border-b border-red-500/30">
+                <div>
+                    <p class="text-red-500 text-[10px] font-bold uppercase tracking-widest">ÁREA RESTRITA</p>
+                    <h3 class="text-white font-serif text-xl">GERENCIAMENTO</h3>
+                </div>
+                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-admin')"></i>
+            </div>
+
+            <div class="flex flex-col h-full overflow-hidden">
+                <div class="flex border-b border-gray-800 bg-[#04060C]">
+                    <button onclick="switchAdminTab('orders')" id="adm-tab-orders" class="flex-1 py-4 text-sm font-bold text-center border-b-2 border-red-500 text-white bg-red-900/10">
+                        PEDIDOS
+                    </button>
+                    <button onclick="switchAdminTab('clients')" id="adm-tab-clients" class="flex-1 py-4 text-sm font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-white">
+                        CLIENTES
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 bg-[#0B0F19]">
+                    
+                    <div id="admin-view-orders" class="space-y-4">
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="admin-search-order" placeholder="Buscar pedido (ID, Email ou Nome)..." class="checkout-input mb-0" onkeyup="filterAdminList('order')">
+                            <button onclick="loadAdminOrders()" class="btn-primary w-auto px-4 py-2 text-xs"><i data-lucide="refresh-cw"></i></button>
+                        </div>
+                        <div id="admin-orders-list" class="space-y-3"></div>
+                    </div>
+
+                    <div id="admin-view-clients" class="hidden space-y-4">
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="admin-search-client" placeholder="Buscar cliente (Nome, Email, CPF)..." class="checkout-input mb-0" onkeyup="filterAdminList('client')">
+                            <button onclick="loadAdminClients()" class="btn-primary w-auto px-4 py-2 text-xs"><i data-lucide="refresh-cw"></i></button>
+                        </div>
+                        <div id="admin-clients-list" class="grid grid-cols-1 gap-3"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-intro" class="chapter-modal">
         <div class="modal-container">
             <div class="modal-header">
@@ -832,7 +872,6 @@
         </div>
     </div>
 
-    <!-- Modal Cap 1 -->
     <div id="modal-cap1" class="chapter-modal">
         <div class="modal-container">
             <div class="modal-header">
@@ -852,7 +891,6 @@
         </div>
     </div>
 
-    <!-- Modal Cap 2 -->
     <div id="modal-cap2" class="chapter-modal">
         <div class="modal-container">
             <div class="modal-header">
@@ -884,7 +922,6 @@
         </div>
     </div>
 
-    <!-- Modal Cap 3 -->
     <div id="modal-cap3" class="chapter-modal">
         <div class="modal-container">
             <div class="modal-header">
@@ -905,7 +942,6 @@
         </div>
     </div>
 
-    <!-- Modal Cap 4 -->
     <div id="modal-cap4" class="chapter-modal">
         <div class="modal-container">
             <div class="modal-header">
@@ -929,7 +965,6 @@
         </div>
     </div>
 
-    <!-- Biblioteca AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
@@ -947,39 +982,34 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        // Funções para backend
         const functions = firebase.functions(); 
 
-        // --- CONFIGURAÇÃO LINKS MERCADO PAGO ---
-        // Se o usuário estiver logado, o código abaixo chama a função de backend "criarPagamento" 
-        // em vez de usar links fixos, garantindo que o pedido seja criado no banco de dados.
-        
+        // --- VARIÁVEIS GLOBAIS ---
         let currentUser = null;
         let currentProductAmount = 64.69;
         let currentProductName = 'Livro Físico';
         let isRegistering = true;
 
-        // Verifica estado do login ao carregar
-      // Verifica estado do login e Permissão de Admin
-auth.onAuthStateChanged(user => {
-    if (user) {
-        currentUser = user;
-        document.getElementById('btn-account').classList.remove('hidden');
+        // --- AUTH & PERMISSÕES ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('btn-account').classList.remove('hidden');
 
-        // Verifica se é ADMIN no banco de dados
-        db.collection('users').doc(user.uid).get().then(doc => {
-            if (doc.exists && doc.data().role === 'admin') {
-                document.getElementById('btn-admin').classList.remove('hidden');
+                // Verifica se é ADMIN no banco de dados
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists && doc.data().role === 'admin') {
+                        document.getElementById('btn-admin').classList.remove('hidden');
+                    }
+                });
+            } else {
+                currentUser = null;
+                document.getElementById('btn-account').classList.add('hidden');
+                document.getElementById('btn-admin').classList.add('hidden');
             }
         });
-    } else {
-        currentUser = null;
-        document.getElementById('btn-account').classList.add('hidden');
-        document.getElementById('btn-admin').classList.add('hidden');
-    }
-});
 
-        // Funções de Fluxo de Compra
+        // --- FLUXO DE COMPRA ---
         function checkLoginAndBuy(type) {
             if (type === 'printed') {
                 currentProductAmount = 64.69;
@@ -990,18 +1020,14 @@ auth.onAuthStateChanged(user => {
             }
 
             if (currentUser) {
-                // Já logado: Chama a função do backend para criar pagamento dinâmico
                 createDynamicPayment();
             } else {
-                // Não logado: Abre modal de cadastro
                 openModal('modal-auth');
             }
         }
 
         function createDynamicPayment() {
             const createPaymentFunction = functions.httpsCallable('criarPagamento');
-            
-            // Feedback visual de carregamento
             const btn = document.querySelector('.btn-primary'); 
             if(btn) btn.innerText = "Processando...";
 
@@ -1011,16 +1037,15 @@ auth.onAuthStateChanged(user => {
                 email: currentUser.email,
                 name: currentUser.displayName || "Cliente"
             }).then(result => {
-                // Redireciona para o URL de pagamento gerado dinamicamente
                 window.location.href = result.data.url;
             }).catch(error => {
-                console.error("Erro ao criar pagamento dinâmico: ", error);
+                console.error("Erro ao criar pagamento: ", error);
                 alert("Erro ao processar pagamento. Tente novamente.");
                 if(btn) btn.innerText = "Tentar Novamente";
             });
         }
 
-        // Lógica do Formulário de Auth
+        // --- AUTH MODAL LOGIC ---
         document.getElementById('auth-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
@@ -1029,22 +1054,20 @@ auth.onAuthStateChanged(user => {
             if (isRegistering) {
                 const name = document.getElementById('auth-name').value;
                 auth.createUserWithEmailAndPassword(email, password).then(cred => {
-                    // Salva dados extras no Firestore
                     return db.collection('users').doc(cred.user.uid).set({
                         name: name,
                         email: email,
-                        role: 'user' // admin ou user
+                        role: 'user'
                     }).then(() => {
                         cred.user.updateProfile({ displayName: name });
                         closeModal('modal-auth');
-                        createDynamicPayment(); // Continua o fluxo de compra dinâmico
+                        createDynamicPayment();
                     });
                 }).catch(error => alert("Erro ao criar conta: " + error.message));
             } else {
-                // Login
                 auth.signInWithEmailAndPassword(email, password).then(() => {
                     closeModal('modal-auth');
-                    createDynamicPayment(); // Continua o fluxo de compra dinâmico
+                    createDynamicPayment();
                 }).catch(error => alert("Erro ao entrar: " + error.message));
             }
         });
@@ -1069,358 +1092,459 @@ auth.onAuthStateChanged(user => {
             }
         }
 
-        // Área do Cliente
-        function openAccount() {
+        function logout() {
+            auth.signOut().then(() => {
+                closeModal('modal-account');
+                window.location.reload();
+            });
+        }
+
+        // --- LÓGICA DO USUÁRIO (MINHA CONTA) ---
+
+        window.openAccount = function() {
             if (!currentUser) return;
             openModal('modal-account');
-            const content = document.getElementById('account-content');
-            content.innerHTML = '<p class="text-gray-400 text-center">Carregando...</p>';
+            document.getElementById('user-name-display').innerText = currentUser.displayName || "CLIENTE";
+            switchUserTab('orders');
+        }
 
-            // Busca tentativas de checkout no Firestore (criadas pelo backend)
+        function switchUserTab(tab) {
+            document.getElementById('tab-user-orders').classList.add('hidden');
+            document.getElementById('tab-user-data').classList.add('hidden');
+            
+            // Resetar estilos dos botões
+            const btnOrders = document.getElementById('btn-tab-orders');
+            const btnData = document.getElementById('btn-tab-data');
+            
+            btnOrders.classList.remove('text-gold', 'border', 'border-gold/30');
+            btnOrders.classList.add('text-gray-400');
+            
+            btnData.classList.remove('text-gold', 'border', 'border-gold/30');
+            btnData.classList.add('text-gray-400');
+
+            if (tab === 'orders') {
+                document.getElementById('tab-user-orders').classList.remove('hidden');
+                btnOrders.classList.add('text-gold', 'border', 'border-gold/30');
+                btnOrders.classList.remove('text-gray-400');
+                loadUserOrders();
+            } else {
+                document.getElementById('tab-user-data').classList.remove('hidden');
+                btnData.classList.add('text-gold', 'border', 'border-gold/30');
+                btnData.classList.remove('text-gray-400');
+                loadUserProfileData();
+            }
+        }
+
+        function loadUserProfileData() {
+            if (!currentUser) return;
+            db.collection('users').doc(currentUser.uid).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('profile-name').value = data.name || '';
+                    document.getElementById('profile-email').value = data.email || currentUser.email;
+                    document.getElementById('profile-phone').value = data.phone || '';
+                    document.getElementById('profile-cpf').value = data.cpf || '';
+                    document.getElementById('profile-address').value = data.address || '';
+                }
+            });
+        }
+
+        function saveUserData(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "SALVANDO...";
+            
+            const updateData = {
+                name: document.getElementById('profile-name').value,
+                phone: document.getElementById('profile-phone').value,
+                cpf: document.getElementById('profile-cpf').value,
+                address: document.getElementById('profile-address').value
+            };
+
+            db.collection('users').doc(currentUser.uid).set(updateData, { merge: true })
+                .then(() => {
+                    alert("Dados atualizados com sucesso!");
+                    document.getElementById('user-name-display').innerText = updateData.name;
+                    btn.innerText = originalText;
+                })
+                .catch(err => {
+                    alert("Erro: " + err.message);
+                    btn.innerText = originalText;
+                });
+        }
+
+        function loadUserOrders() {
+            const list = document.getElementById('account-orders-list');
+            list.innerHTML = '<p class="text-gray-500 text-center py-4">Carregando pedidos...</p>';
+
             db.collection('checkout_attempts')
                 .where('email', '==', currentUser.email)
                 .orderBy('date', 'desc')
                 .get()
                 .then(snapshot => {
                     if (snapshot.empty) {
-                        content.innerHTML = '<p class="text-gray-400 text-center">Você ainda não fez nenhum pedido.</p>';
+                        list.innerHTML = '<div class="text-center py-8"><p class="text-gray-400 mb-4">Você ainda não tem pedidos.</p><button onclick="closeModal(\'modal-account\'); checkLoginAndBuy(\'printed\')" class="btn-primary w-auto mx-auto px-6 py-2">FAZER MEU PRIMEIRO PEDIDO</button></div>';
                         return;
                     }
-                    
+
                     let html = '';
                     snapshot.forEach(doc => {
                         const order = doc.data();
-                        const date = order.date ? new Date(order.date.seconds * 1000).toLocaleDateString() : 'Data pendente';
+                        const id = doc.id;
+                        const status = order.status || 'Aguardando Pagamento';
+                        const date = order.date ? new Date(order.date.seconds * 1000).toLocaleDateString() : '---';
                         
+                        let statusClass = 'text-yellow-500';
+                        if(status.includes('Aprovado') || status.includes('Entregue')) statusClass = 'text-green-500';
+                        if(status.includes('Cancelado') || status.includes('Recusado')) statusClass = 'text-red-500';
+                        if(status.includes('Coletado') || status.includes('Saiu')) statusClass = 'text-blue-400';
+
                         html += `
-                            <div class="order-item">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h4 class="text-gold font-bold text-sm">${order.product}</h4>
-                                    <span class="status-badge status-pending">Pedido Iniciado</span>
+                            <div onclick="showOrderDetails('${id}')" class="bg-[#111625] border border-gray-800 p-4 rounded cursor-pointer hover:border-gold/50 transition-all group">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-white font-bold text-sm">${order.product}</p>
+                                        <p class="text-xs text-gray-500">Pedido #${id.substr(0,8)}... • ${date}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs font-bold uppercase ${statusClass} mb-1">${status}</p>
+                                        <p class="text-xs text-gray-400">Ver Detalhes <i data-lucide="chevron-right" class="w-3 h-3 inline group-hover:translate-x-1 transition-transform"></i></p>
+                                    </div>
                                 </div>
-                                <p class="text-gray-400 text-xs">Valor: R$ ${order.price}</p>
-                                <p class="text-gray-400 text-xs">Data: ${date}</p>
                             </div>
                         `;
                     });
-                    content.innerHTML = html;
+                    list.innerHTML = html;
+                    lucide.createIcons();
                 });
         }
 
-        function logout() {
-            auth.signOut().then(() => {
-                closeModal('modal-account');
-                alert("Você saiu da conta.");
+        // --- TIMELINE & DETALHES DO PEDIDO ---
+        function showOrderDetails(orderId) {
+            const view = document.getElementById('order-details-view');
+            const content = document.getElementById('order-details-content');
+            
+            view.classList.remove('hidden');
+            content.innerHTML = '<p class="text-center text-gold">Carregando detalhes...</p>';
+
+            db.collection('checkout_attempts').doc(orderId).get().then(doc => {
+                if(!doc.exists) return;
+                const order = doc.data();
+                const status = order.status || 'Pedido Realizado';
+                
+                // Mapa de passos
+                let step = 1;
+                let isError = false;
+
+                if (['Pedido Realizado', 'Aguardando Pagamento'].includes(status)) step = 1;
+                else if (['Pagamento Aprovado', 'Pedido em Fabricação', 'Fabricação Finalizada'].includes(status)) step = 2;
+                else if (['Pedido na Expedição'].includes(status)) step = 3;
+                else if (['Pedido Coletado', 'Pedido Saiu para Entrega'].includes(status)) step = 4;
+                else if (['Pedido Entregue'].includes(status)) step = 5;
+                else if (['Pagamento Recusado', 'Pedido Cancelado'].includes(status)) isError = true;
+
+                let timelineHTML = '';
+                if(!isError) {
+                    const steps = [
+                        { l: 'Pedido', i: 'shopping-cart' },
+                        { l: 'Produção', i: 'hammer' },
+                        { l: 'Expedição', i: 'package' },
+                        { l: 'Transporte', i: 'truck' },
+                        { l: 'Entregue', i: 'check-circle' }
+                    ];
+
+                    timelineHTML = `<div class="flex justify-between items-center relative mb-8 px-2 mt-4">
+                        <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-800 -z-0"></div>
+                        <div class="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-gold to-yellow-600 -z-0 transition-all duration-1000" style="width: ${((step-1)/(steps.length-1))*100}%"></div>`;
+
+                    steps.forEach((s, index) => {
+                        const active = index + 1 <= step;
+                        timelineHTML += `
+                            <div class="flex flex-col items-center gap-2 z-10">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${active ? 'bg-gold border-gold text-black scale-110' : 'bg-[#0B0F19] border-gray-600 text-gray-600'}">
+                                    <i data-lucide="${s.i}" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider ${active ? 'text-gold' : 'text-gray-600'}">${s.l}</span>
+                            </div>
+                        `;
+                    });
+                    timelineHTML += `</div>`;
+                } else {
+                    timelineHTML = `
+                        <div class="bg-red-900/20 border border-red-500/50 p-4 rounded text-center mb-6">
+                            <i data-lucide="x-circle" class="w-10 h-10 text-red-500 mx-auto mb-2"></i>
+                            <p class="text-red-500 font-bold uppercase">Pedido Cancelado ou Recusado</p>
+                        </div>
+                    `;
+                }
+
+                // Rastreio
+                let trackingHTML = '';
+                if (order.tracking_code) {
+                    trackingHTML = `
+                        <div class="bg-[#111625] border border-gold/30 p-4 rounded mb-6 text-center shadow-[0_0_15px_rgba(203,161,53,0.1)]">
+                            <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Código de Rastreio</p>
+                            <p class="text-xl text-white font-serif font-bold tracking-wider select-all">${order.tracking_code}</p>
+                            <a href="https://www.melhorrastreio.com.br/rastreio/${order.tracking_code}" target="_blank" class="text-[10px] text-gold underline mt-2 block">CLIQUE PARA RASTREAR</a>
+                        </div>
+                    `;
+                }
+
+                content.innerHTML = `
+                    <div class="text-center mb-6">
+                        <p class="text-gray-400 text-xs uppercase tracking-widest">Status Atual</p>
+                        <h2 class="text-2xl text-gold font-serif font-bold mt-1">${status}</h2>
+                    </div>
+
+                    ${timelineHTML}
+                    ${trackingHTML}
+
+                    <div class="bg-[#111625] p-4 rounded border border-gray-800 space-y-3">
+                        <h3 class="text-white font-serif border-b border-gray-700 pb-2 mb-2">RESUMO</h3>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Produto:</span> <span class="text-white">${order.product}</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Valor:</span> <span class="text-gold font-bold">R$ ${order.price}</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Data:</span> <span class="text-white">${new Date(order.date.seconds*1000).toLocaleDateString()}</span></div>
+                    </div>
+                `;
+                lucide.createIcons();
             });
         }
 
-        // Inicialização do AOS
-        AOS.init({
-            once: true, 
-            duration: 800, 
-            offset: 50,
-        });
+        function hideOrderDetails() {
+            document.getElementById('order-details-view').classList.add('hidden');
+        }
 
-        lucide.createIcons();
-        
-        // Lógica da Música
-        const bgMusic = document.getElementById('bg-music');
-        const floatingPlayer = document.getElementById('floating-player');
-        const musicStatus = document.getElementById('music-status');
-        const playIcon = document.getElementById('play-icon');
-        const musicIcon = document.getElementById('music-icon');
-        let isPlaying = false;
+        // --- LÓGICA DO ADMINISTRADOR ---
 
-        bgMusic.volume = 0.5;
+        let adminCache = { orders: [], clients: [] };
 
-        function toggleMusic() {
-            if (isPlaying) {
-                bgMusic.pause();
-                musicStatus.innerText = "Tocar Música";
-                playIcon.setAttribute('data-lucide', 'play');
-                floatingPlayer.classList.remove('music-playing');
-                isPlaying = false;
+        window.openAdminPanel = function() {
+            openModal('modal-admin');
+            switchAdminTab('orders');
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('admin-view-orders').classList.add('hidden');
+            document.getElementById('admin-view-clients').classList.add('hidden');
+            
+            // Reset Tabs
+            document.getElementById('adm-tab-orders').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-white cursor-pointer';
+            document.getElementById('adm-tab-clients').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-white cursor-pointer';
+
+            if(tab === 'orders') {
+                document.getElementById('admin-view-orders').classList.remove('hidden');
+                document.getElementById('adm-tab-orders').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-red-500 text-white bg-red-900/10 cursor-pointer';
+                loadAdminOrders();
             } else {
-                bgMusic.play().then(() => {
-                    musicStatus.innerText = "Pausar Música";
-                    playIcon.setAttribute('data-lucide', 'pause');
-                    floatingPlayer.classList.add('music-playing');
-                    isPlaying = true;
-                }).catch(error => {
-                    console.log("Autoplay bloqueado.");
-                });
+                document.getElementById('admin-view-clients').classList.remove('hidden');
+                document.getElementById('adm-tab-clients').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-red-500 text-white bg-red-900/10 cursor-pointer';
+                loadAdminClients();
             }
-            lucide.createIcons();
         }
 
-        document.body.addEventListener('click', function() {
-            if (!isPlaying) {
-                toggleMusic();
-            }
-        }, { once: true }); 
+        // PEDIDOS ADMIN
+        function loadAdminOrders() {
+            const list = document.getElementById('admin-orders-list');
+            list.innerHTML = '<p class="text-gray-400 text-center">Carregando...</p>';
 
-        // Lógica de Preços (Abas)
-        function switchPrice(type) {
-            currentProduct = type;
-            document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + type).classList.add('active');
+            db.collection('checkout_attempts').orderBy('date', 'desc').get().then(snap => {
+                adminCache.orders = [];
+                snap.forEach(doc => adminCache.orders.push({id: doc.id, ...doc.data()}));
+                renderAdminOrders(adminCache.orders);
+            });
+        }
 
-            const priceTitle = document.getElementById('price-title');
-            const priceOld = document.getElementById('price-old');
-            const priceCurrent = document.getElementById('price-current');
-            const priceFeatures = document.getElementById('price-features');
-            const priceBtn = document.getElementById('price-btn');
+        function renderAdminOrders(orders) {
+            const list = document.getElementById('admin-orders-list');
+            if(orders.length === 0) { list.innerHTML = '<p class="text-center text-gray-500">Nenhum pedido encontrado.</p>'; return; }
             
-            // Atualiza botão de compra com a nova função
-            priceBtn.setAttribute('onclick', `checkLoginAndBuy('${type}')`);
-
-            if (type === 'printed') {
-                priceTitle.innerText = "LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK";
-                priceOld.innerText = "109,83";
-                priceCurrent.innerText = "64,69";
-                priceBtn.innerText = "QUERO MEU LIVRO FÍSICO!";
-                
-                priceFeatures.innerHTML = `
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Livro Impresso (Capa Flexível)</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Audio Book Narrado (Bônus)</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Entrega via Correios</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="gift" class="w-5 h-5 text-gold"></i> Marcador de Páginas Exclusivo</p>
-                `;
-            } else {
-                priceTitle.innerText = "E-BOOK COMPLETO + AUDIO BOOK";
-                priceOld.innerText = "39,99";
-                priceCurrent.innerText = "19,99";
-                priceBtn.innerText = "QUERO MEU E-BOOK!";
-                
-                priceFeatures.innerHTML = `
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Livro Digital (PDF/EPUB)</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Audio Book Narrado</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Entrega Imediata por E-mail</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Sem Custo de Frete</p>
-                `;
-            }
-            lucide.createIcons();
-        }
-        
-        switchPrice('printed');
-
-        function switchTab(store, url, btnText) {
-            document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + store).classList.add('active');
-            
-            const container = document.getElementById('market-btn-container');
-            container.classList.remove('hidden');
-            container.classList.add('fade-in');
-
-            const btnTextEl = document.getElementById('market-text');
-            const btnLink = document.getElementById('market-link');
-            
-            btnTextEl.innerText = btnText;
-            btnLink.href = url;
-        }
-
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('open');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('open');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-            document.body.style.overflow = 'auto';
-        }
-
-        window.onclick = function(event) {
-            if (event.target.classList.contains('chapter-modal') || 
-                event.target.classList.contains('auth-modal') || 
-                event.target.classList.contains('account-modal')) {
-                closeModal(event.target.id);
-            }
-        }
-
-        // Máscaras
-        document.addEventListener('DOMContentLoaded', function () {
-            if(document.getElementById('auth-phone')) {
-                 IMask(document.getElementById('auth-phone'), { mask: '(00) 00000-0000' });
-            }
-            if(document.getElementById('auth-cpf')) {
-                 IMask(document.getElementById('auth-cpf'), { mask: '000.000.000-00' });
-            }
-        });
-
-// --- FUNÇÕES DO PAINEL ADMINISTRATIVO ---
-
-let allOrdersCache = []; // Para guardar os pedidos e facilitar a busca
-
-function openAdminPanel() {
-    openModal('modal-admin');
-    loadAllOrders();
-}
-
-function loadAllOrders() {
-    const content = document.getElementById('admin-content');
-    content.innerHTML = '<p class="text-gray-400 text-center">Carregando todos os pedidos...</p>';
-
-    // Busca TODOS os pedidos na coleção checkout_attempts
-    db.collection('checkout_attempts')
-        .orderBy('date', 'desc')
-        .get()
-        .then(snapshot => {
-            if (snapshot.empty) {
-                content.innerHTML = '<p class="text-gray-400 text-center">Nenhum pedido encontrado.</p>';
-                return;
-            }
-
-            allOrdersCache = [];
             let html = '';
+            const statuses = [
+                'Pedido Realizado', 'Aguardando Pagamento', 'Pagamento Aprovado', 'Pagamento Recusado',
+                'Pedido Cancelado', 'Pedido em Fabricação', 'Fabricação Finalizada',
+                'Pedido na Expedição', 'Pedido Coletado', 'Pedido Saiu para Entrega', 'Pedido Entregue'
+            ];
 
-            snapshot.forEach(doc => {
-                const order = doc.data();
-                const id = doc.id;
-                // Salva no cache com ID
-                allOrdersCache.push({ id, ...order });
+            orders.forEach(o => {
+                // Status dropdown logic
+                let optionsHTML = statuses.map(s => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s}</option>`).join('');
                 
-                // Converte Data
-                const date = order.date ? new Date(order.date.seconds * 1000).toLocaleString() : 'Sem data';
-                
-                // Define cor do status
-                let statusColor = 'bg-yellow-600'; // Pendente
-                if(order.status === 'Pago' || order.status === 'paid') statusColor = 'bg-green-600';
-                if(order.status === 'Enviado') statusColor = 'bg-blue-600';
-                if(order.status === 'Cancelado') statusColor = 'bg-red-600';
-
-                // Status atual para o select
-                const currentStatus = order.status || 'Pendente';
+                // Tracking logic
+                const needsTracking = ['Pedido Coletado', 'Pedido Saiu para Entrega', 'Pedido Entregue'].includes(o.status);
+                const trackingVal = o.tracking_code || '';
 
                 html += `
-                    <div class="bg-[#111625] border border-gray-800 p-4 rounded relative group hover:border-[#CBA135] transition-colors" id="card-${id}">
-                        <div class="flex justify-between items-start gap-4 flex-wrap">
+                    <div class="bg-[#111625] border border-gray-800 p-4 rounded hover:border-red-500/30 transition-colors">
+                        <div class="flex flex-col md:flex-row justify-between gap-4">
                             <div class="flex-1">
-                                <p class="text-gold text-xs font-bold uppercase mb-1">${order.product || 'Produto Desconhecido'}</p>
-                                <p class="text-white font-bold text-sm">${order.name || 'Sem Nome'}</p>
-                                <p class="text-gray-400 text-xs">${order.email}</p>
-                                <p class="text-gray-500 text-[10px] mt-1">ID: ${id} • ${date}</p>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] bg-gray-800 px-2 rounded text-gray-300 font-mono">${o.id}</span>
+                                    <span class="text-gold font-bold text-xs">${o.product}</span>
+                                </div>
+                                <p class="text-white font-bold">${o.name || 'Sem nome'}</p>
+                                <p class="text-gray-400 text-xs">${o.email}</p>
+                                <div class="mt-2 text-[10px] text-gray-500">
+                                     <span>Preço: R$ ${o.price}</span>
+                                </div>
                             </div>
                             
-                            <div class="flex flex-col items-end gap-2">
-                                <select onchange="updateOrderStatus('${id}', this.value)" class="bg-black border border-gray-600 text-white text-xs p-1 rounded cursor-pointer focus:border-gold outline-none">
-                                    <option value="Pendente" ${currentStatus === 'Pendente' ? 'selected' : ''}>Pendente</option>
-                                    <option value="Pago" ${currentStatus === 'Pago' ? 'selected' : ''}>Pago</option>
-                                    <option value="Enviado" ${currentStatus === 'Enviado' ? 'selected' : ''}>Enviado</option>
-                                    <option value="Entregue" ${currentStatus === 'Entregue' ? 'selected' : ''}>Entregue</option>
-                                    <option value="Cancelado" ${currentStatus === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
+                            <div class="flex flex-col gap-2 min-w-[220px]">
+                                <label class="text-[9px] text-gray-500 uppercase font-bold">Status</label>
+                                <select onchange="updateAdminOrderStatus('${o.id}', this.value)" class="bg-black border border-gray-700 text-white text-xs p-2 rounded focus:border-red-500 outline-none cursor-pointer">
+                                    ${optionsHTML}
                                 </select>
+                                
+                                <div id="tracking-box-${o.id}" class="${needsTracking ? '' : 'hidden'}">
+                                     <input type="text" placeholder="Cole o Código de Rastreio aqui..." value="${trackingVal}" 
+                                        onblur="saveTrackingCode('${o.id}', this.value)"
+                                        class="w-full bg-[#0B0F19] border border-gold/30 text-gold text-xs p-2 rounded placeholder-gray-600 focus:border-gold outline-none">
+                                </div>
 
-                                <p class="text-white font-bold text-sm">R$ ${order.price}</p>
+                                <div class="flex justify-end gap-2 mt-2">
+                                    <button onclick="editOrderData('${o.id}')" class="p-2 bg-blue-900/20 text-blue-400 rounded hover:bg-blue-900/40 text-xs flex items-center gap-1" title="Editar Dados"><i data-lucide="edit" class="w-3 h-3"></i> Editar</button>
+                                    <button onclick="deleteOrder('${o.id}')" class="p-2 bg-red-900/20 text-red-500 rounded hover:bg-red-900/40 text-xs flex items-center gap-1" title="Deletar"><i data-lucide="trash-2" class="w-3 h-3"></i> Deletar</button>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="mt-4 pt-3 border-t border-gray-800 flex justify-end gap-3">
-                             <button onclick="editClientData('${id}')" class="text-blue-400 text-xs hover:text-white flex items-center gap-1">
-                                <i data-lucide="edit" class="w-3 h-3"></i> Editar Dados
-                            </button>
-                            <button onclick="deleteOrder('${id}')" class="text-red-500 text-xs hover:text-red-300 flex items-center gap-1">
-                                <i data-lucide="trash-2" class="w-3 h-3"></i> Deletar
-                            </button>
                         </div>
                     </div>
                 `;
             });
-
-            content.innerHTML = html;
+            list.innerHTML = html;
             lucide.createIcons();
-        })
-        .catch(err => {
-            console.error(err);
-            content.innerHTML = '<p class="text-red-500 text-center">Erro ao carregar.</p>';
-        });
-}
+        }
 
-// Alterar Status
-function updateOrderStatus(docId, newStatus) {
-    db.collection('checkout_attempts').doc(docId).update({
-        status: newStatus
-    }).then(() => {
-        // Feedback visual simples (piscar verde)
-        const card = document.getElementById(`card-${docId}`);
-        card.style.borderColor = '#22c55e';
-        setTimeout(() => card.style.borderColor = '', 1000);
-    }).catch(error => alert("Erro ao atualizar: " + error.message));
-}
-
-// Deletar Pedido
-function deleteOrder(docId) {
-    if(confirm("Tem certeza que deseja deletar este pedido permanentemente?")) {
-        db.collection('checkout_attempts').doc(docId).delete().then(() => {
-            document.getElementById(`card-${docId}`).remove();
-        }).catch(error => alert("Erro ao deletar: " + error.message));
-    }
-}
-
-// Editar Dados do Cliente (Nome/Email) - Simplificado usando Prompt
-function editClientData(docId) {
-    const order = allOrdersCache.find(o => o.id === docId);
-    if(!order) return;
-
-    const newName = prompt("Editar Nome do Cliente:", order.name);
-    if (newName === null) return; // Cancelou
-
-    const newEmail = prompt("Editar E-mail do Cliente:", order.email);
-    if (newEmail === null) return;
-
-    if(newName && newEmail) {
-        db.collection('checkout_attempts').doc(docId).update({
-            name: newName,
-            email: newEmail
-        }).then(() => {
-            loadAllOrders(); // Recarrega para mostrar dados novos
-            alert("Dados atualizados!");
-        }).catch(err => alert("Erro: " + err.message));
-    }
-}
-
-// Filtrar na tela (sem recarregar banco)
-function filterOrders() {
-    const term = document.getElementById('admin-search').value.toLowerCase();
-    const content = document.getElementById('admin-content');
-    
-    const filtered = allOrdersCache.filter(order => 
-        (order.email && order.email.toLowerCase().includes(term)) || 
-        (order.name && order.name.toLowerCase().includes(term)) ||
-        (order.id && order.id.includes(term))
-    );
-
-    if(filtered.length === 0) {
-        content.innerHTML = '<p class="text-gray-500 text-center mt-4">Nada encontrado.</p>';
-        return;
-    }
-
-    // Renderiza apenas os filtrados (Reutilizando lógica simples de HTML string)
-    // Nota: Para manter o código curto, vou chamar loadAllOrders se o campo estiver vazio
-    // Se estiver preenchido, o ideal seria ter a função de renderização separada, 
-    // mas aqui vou apenas esconder os elementos que não batem para simplificar.
-    
-    allOrdersCache.forEach(order => {
-        const el = document.getElementById(`card-${order.id}`);
-        if(el) {
-            if((order.email && order.email.toLowerCase().includes(term)) || 
-               (order.name && order.name.toLowerCase().includes(term))) {
-                el.style.display = 'block';
+        function updateAdminOrderStatus(id, status) {
+            const trackingBox = document.getElementById(`tracking-box-${id}`);
+            if(['Pedido Coletado', 'Pedido Saiu para Entrega', 'Pedido Entregue'].includes(status)) {
+                trackingBox.classList.remove('hidden');
             } else {
-                el.style.display = 'none';
+                trackingBox.classList.add('hidden');
+            }
+
+            db.collection('checkout_attempts').doc(id).update({ status: status })
+                .then(() => console.log("Status atualizado"))
+                .catch(err => alert("Erro: " + err));
+        }
+
+        function saveTrackingCode(id, code) {
+            if(!code) return;
+            db.collection('checkout_attempts').doc(id).update({ tracking_code: code })
+                .then(() => alert("Código de rastreio salvo!"))
+                .catch(err => alert("Erro ao salvar rastreio"));
+        }
+
+        function editOrderData(id) {
+            const o = adminCache.orders.find(x => x.id === id);
+            const newName = prompt("Nome:", o.name);
+            if(newName === null) return;
+            const newEmail = prompt("Email:", o.email);
+            if(newEmail === null) return;
+            const newProduct = prompt("Produto:", o.product);
+            if(newProduct === null) return;
+            const newPrice = prompt("Preço:", o.price);
+            if(newPrice === null) return;
+            
+            if(newName && newEmail) {
+                db.collection('checkout_attempts').doc(id).update({
+                    name: newName, email: newEmail, product: newProduct, price: newPrice
+                }).then(() => {
+                    loadAdminOrders();
+                    alert("Pedido atualizado.");
+                });
             }
         }
-    });
-}
 
-   
+        function deleteOrder(docId) {
+            if(confirm("Tem certeza que deseja deletar este pedido?")) {
+                db.collection('checkout_attempts').doc(docId).delete().then(() => loadAdminOrders());
+            }
+        }
+
+        // CLIENTES ADMIN
+        function loadAdminClients() {
+            const list = document.getElementById('admin-clients-list');
+            list.innerHTML = '<p class="text-center text-gray-500">Carregando clientes...</p>';
+            
+            db.collection('users').get().then(snap => {
+                adminCache.clients = [];
+                snap.forEach(doc => adminCache.clients.push({id: doc.id, ...doc.data()}));
+                renderAdminClients(adminCache.clients);
+            });
+        }
+
+        function renderAdminClients(clients) {
+            const list = document.getElementById('admin-clients-list');
+            if(clients.length === 0) { list.innerHTML = '<p class="text-center text-gray-500">Nenhum cliente.</p>'; return; }
+
+            let html = '';
+            clients.forEach(c => {
+                html += `
+                    <div class="bg-[#111625] p-4 rounded border border-gray-800 flex justify-between items-center">
+                        <div>
+                            <p class="text-white font-bold text-sm uppercase">${c.name || 'Sem Nome'}</p>
+                            <p class="text-gray-400 text-xs">${c.email}</p>
+                            <p class="text-[10px] text-gray-600 mt-1">CPF: ${c.cpf || '-'} • Tel: ${c.phone || '-'}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editClientAdmin('${c.id}')" class="text-blue-400 hover:text-white"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deleteUserRecord('${c.id}')" class="text-red-500 hover:text-red-300"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function editClientAdmin(id) {
+            const c = adminCache.clients.find(x => x.id === id);
+            const newName = prompt("Nome:", c.name);
+            if(newName === null) return;
+            const newPhone = prompt("Telefone:", c.phone || '');
+            if(newPhone === null) return;
+            const newCpf = prompt("CPF:", c.cpf || '');
+            if(newCpf === null) return;
+
+            db.collection('users').doc(id).update({
+                name: newName, phone: newPhone, cpf: newCpf
+            }).then(() => {
+                loadAdminClients();
+                alert("Cliente atualizado.");
+            });
+        }
+
+        function deleteUserRecord(id) {
+            if(confirm("Isso deleta apenas os dados do cadastro do banco de dados. Continuar?")) {
+                db.collection('users').doc(id).delete().then(() => loadAdminClients());
+            }
+        }
+
+        function filterAdminList(type) {
+            const term = document.getElementById(type === 'order' ? 'admin-search-order' : 'admin-search-client').value.toLowerCase();
+            
+            if(type === 'order') {
+                const filtered = adminCache.orders.filter(o => 
+                    (o.email && o.email.toLowerCase().includes(term)) || 
+                    (o.name && o.name.toLowerCase().includes(term)) || 
+                    (o.id.includes(term))
+                );
+                renderAdminOrders(filtered);
+            } else {
+                const filtered = adminCache.clients.filter(c => 
+                    (c.email && c.email.toLowerCase().includes(term)) || 
+                    (c.name && c.name.toLowerCase().includes(term)) ||
+                    (c.cpf && c.cpf.includes(term))
+                );
+                renderAdminClients(filtered);
+            }
+        }
+
+        // Inicialização de elementos
+        AOS.init({ once: true, duration: 800, offset: 50 });
+        lucide.createIcons();
+        switchPrice('printed');
+
     </script>
 </body>
 </html>
