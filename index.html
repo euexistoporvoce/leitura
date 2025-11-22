@@ -766,7 +766,7 @@
         <i id="play-icon" data-lucide="play" class="w-4 h-4 text-white ml-2 fill-current"></i>
     </div>
 
-    <!-- MODAL DE CHECKOUT (Integrado com Formspree e Pagamento) -->
+    <!-- MODAL DE CHECKOUT (Integrado com Formspree) -->
     <div id="modal-checkout" class="checkout-modal">
         <div class="checkout-container">
             <div class="checkout-timer">
@@ -785,8 +785,8 @@
                 <!-- Coluna Esquerda: Formulário Formspree -->
                 <div class="p-2">
                     <p class="text-white text-sm mb-4 font-bold">SEUS DADOS (Seguro e Criptografado)</p>
-                    <!-- Formulário integrado com Formspree e script de redirecionamento -->
-                    <form id="checkout-form" action="https://formspree.io/f/xqajpybz" method="POST" target="_blank">
+                    <!-- Formulário integrado com Formspree. O script abaixo fará o redirecionamento sem abrir nova aba -->
+                    <form id="checkout-form" action="https://formspree.io/f/xqajpybz" method="POST">
                         <input type="hidden" name="Produto" id="form-product-type">
                         <input type="text" name="Nome" id="checkout-name" placeholder="Nome Completo" class="checkout-input" required>
                         <input type="email" name="Email" id="checkout-email" placeholder="Seu Melhor E-mail" class="checkout-input" required>
@@ -1008,7 +1008,7 @@
         }, { once: true }); 
 
         // --- CONFIGURAÇÃO DOS LINKS DE PAGAMENTO ---
-        // Substitua pelos seus links reais do Mercado Pago
+        // Substitua os links abaixo pelos seus links reais do Mercado Pago ou PagSeguro
         const paymentLinks = {
             printed: "https://link-do-mercado-pago-livro-fisico.com", 
             ebook: "https://link-do-mercado-pago-ebook.com"         
@@ -1129,17 +1129,43 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // Interceptar envio do formulário e redirecionar para o pagamento
+        // Interceptar envio do formulário e fazer envio silencioso com redirecionamento
         const form = document.getElementById('checkout-form');
-        form.addEventListener('submit', function(e) {
-            // O formulário envia para o Formspree (abre nova aba ou carrega)
-            // Vamos garantir que o usuário vá para o pagamento logo em seguida
-            
-            setTimeout(() => {
-                const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
-                // Redireciona a página atual para o pagamento, enquanto o Formspree processa no target _blank
-                window.location.href = finalLink; 
-            }, 1000); 
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Impede o envio padrão do navegador
+
+            const button = form.querySelector('button');
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = "Processando..."; // Feedback visual
+
+            const formData = new FormData(form);
+
+            try {
+                // Envio AJAX (silencioso) para o Formspree
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Sucesso! Redireciona para o pagamento na mesma aba
+                    const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
+                    window.location.href = finalLink;
+                } else {
+                    alert("Ocorreu um erro ao processar seus dados. Tente novamente.");
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert("Ocorreu um erro de conexão. Tente novamente.");
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
         });
 
         function openModal(modalId) {
