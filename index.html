@@ -43,6 +43,9 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    fontSize: {
+                        'xxs': '.65rem', // Aumentado um pouco o menor tamanho
                     }
                 }
             }
@@ -52,14 +55,27 @@
     <style>
         /* Estilos Globais */
         html, body {
-            max-width: 100%;
+            max-width: 100vw;
             overflow-x: hidden;
         }
         body { 
             background-color: #04060C; 
             color: #e2e8f0; 
             font-family: 'Lato', sans-serif;
+            /* Tamanho base mínimo para leitura confortável */
+            font-size: 16px; 
         }
+
+        /* Ajuste de fontes menores para mobile */
+        p, span, a, div {
+            /* Garante que textos não fiquem microscópicos */
+            font-size: max(14px, 1em); 
+        }
+        
+        /* Exceções para textos de apoio muito pequenos (como legendas) */
+        .text-xs { font-size: 12px !important; }
+        .text-\[10px\] { font-size: 11px !important; } /* Aumentado levemente */
+        .text-\[9px\] { font-size: 10px !important; }  /* Aumentado levemente */
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -92,9 +108,10 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
-            font-size: 14px;
+            font-size: 16px; /* Fonte maior para botões */
             cursor: pointer;
-            white-space: nowrap;
+            white-space: normal; /* Permite quebra se necessário, mas evita corte */
+            text-align: center;
         }
         .btn-primary:hover { 
             background-color: #b38b2a; 
@@ -125,8 +142,19 @@
         }
 
         /* Tipografia */
-        .title-hero { font-family: 'Cinzel', serif; color: white; line-height: 1.2; word-wrap: break-word; hyphens: auto; }
-        .title-gold { font-family: 'Cinzel', serif; color: #CBA135; font-style: italic; word-wrap: break-word; }
+        .title-hero { 
+            font-family: 'Cinzel', serif; 
+            color: white; 
+            line-height: 1.3; 
+            word-wrap: break-word; 
+            hyphens: auto; 
+        }
+        .title-gold { 
+            font-family: 'Cinzel', serif; 
+            color: #CBA135; 
+            font-style: italic; 
+            word-wrap: break-word; 
+        }
 
         /* Elementos */
         .section-box { background-color: #0B0F19; border-radius: 4px; overflow: hidden; margin-bottom: 30px; }
@@ -140,11 +168,11 @@
         /* Abas de Preço */
         .price-tab {
             cursor: pointer;
-            padding: 10px;
+            padding: 12px; /* Aumentado padding para toque */
             border: 1px solid rgba(255,255,255,0.1);
             background: #0B0F19;
             color: #888;
-            font-size: 12px;
+            font-size: 14px; /* Fonte maior */
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.3s;
@@ -260,7 +288,7 @@
             padding: 30px;
             overflow-y: auto;
             font-family: 'Lato', sans-serif;
-            font-size: 17px; 
+            font-size: 18px; /* Aumentado para leitura confortável */
             line-height: 1.8;
             color: #d1d5db;
             text-align: justify;
@@ -296,12 +324,13 @@
             width: 100%;
             background: #111625;
             border: 1px solid #333;
-            padding: 12px;
+            padding: 14px; /* Aumentado para facilitar o toque */
             color: white;
             border-radius: 4px;
             margin-bottom: 15px;
             outline: none;
             transition: border-color 0.3s;
+            font-size: 16px; /* Evita zoom automático no iOS */
         }
         .checkout-input:focus { border-color: #CBA135; }
         .checkout-summary {
@@ -315,7 +344,7 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
-            font-size: 10px;
+            font-size: 12px;
             color: #22c55e;
             margin-top: 10px;
             text-transform: uppercase;
@@ -333,17 +362,22 @@
     </audio>
 
     <!-- BARRA SUPERIOR -->
-    <div class="fixed top-0 left-0 w-full bg-[#04060C]/90 backdrop-blur-md border-b border-[#CBA135]/20 z-50 py-3 transition-all duration-300">
+    <div class="fixed top-0 left-0 w-full bg-[#04060C]/95 backdrop-blur-md border-b border-[#CBA135]/20 z-50 py-3 transition-all duration-300 shadow-lg">
         <div class="mobile-container !min-h-0 !py-0 flex justify-between items-center max-w-full">
-            <div class="flex items-center gap-2 flex-1 min-w-0" data-aos="fade-right">
-                <i data-lucide="book" class="w-4 h-4 text-gold flex-shrink-0"></i>
-                <!-- Texto ajustável com truncate para não estourar o layout -->
-                <span class="font-serif text-white font-bold text-[10px] sm:text-xs tracking-widest uppercase truncate block">
-                    Eu Existo <span class="text-gold">Por Você</span>
-                </span>
+            <div class="flex items-center gap-2 flex-1 min-w-0 mr-2" data-aos="fade-right">
+                <i data-lucide="book" class="w-5 h-5 text-gold flex-shrink-0"></i>
+                <!-- Texto ajustado para não quebrar -->
+                <div class="flex flex-col">
+                    <span class="font-serif text-white font-bold text-[11px] sm:text-xs tracking-widest uppercase truncate">
+                        Eu Existo
+                    </span>
+                    <span class="font-serif text-gold font-bold text-[10px] sm:text-xs tracking-widest uppercase truncate">
+                        Por Você
+                    </span>
+                </div>
             </div>
-            <!-- Botão fixo sem quebra de linha -->
-            <div onclick="openCheckout('printed')" class="bg-gold text-black font-bold text-[10px] px-3 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 ml-2 whitespace-nowrap" data-aos="fade-left">
+            <!-- Botão fixo sem quebra de linha e tamanho ajustado -->
+            <div onclick="openCheckout('printed')" class="bg-gold text-black font-bold text-[11px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 whitespace-nowrap shadow-md" data-aos="fade-left">
                 Comprar Agora
             </div>
         </div>
@@ -354,45 +388,49 @@
 
         <!-- HERO -->
         <div class="text-center mb-12">
-            <p class="text-gold text-[10px] uppercase tracking-[0.3em] font-bold mb-4" data-aos="fade-down">UMA JORNADA REAL</p>
-            <!-- Ajuste de tamanho de fonte e quebra de palavra para mobile -->
-            <h1 class="title-hero text-2xl sm:text-3xl mb-2" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
-            <h2 class="title-gold text-xl sm:text-2xl mb-8" data-aos="fade-up" data-aos-delay="200">E DEPOIS TE DAR FORÇAS PARA CONTINUAR.</h2>
+            <p class="text-gold text-xs uppercase tracking-[0.3em] font-bold mb-4" data-aos="fade-down">UMA JORNADA REAL</p>
+            <!-- Ajuste de tamanho de fonte para evitar zoom/overflow -->
+            <h1 class="title-hero text-2xl sm:text-3xl mb-4 leading-snug" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
+            <h2 class="title-gold text-xl sm:text-2xl mb-8 leading-snug" data-aos="fade-up" data-aos-delay="200">E DEPOIS TE DAR FORÇAS PARA CONTINUAR.</h2>
 
-            <div class="flex text-left mb-10 max-w-sm mx-auto" data-aos="fade-up" data-aos-delay="300">
+            <div class="flex text-left mb-10 max-w-sm mx-auto px-2" data-aos="fade-up" data-aos-delay="300">
                 <div class="w-1 bg-gold mr-4 flex-shrink-0"></div>
-                <p class="text-gray-400 text-sm font-light leading-relaxed">
+                <p class="text-gray-300 text-base font-light leading-relaxed">
                     Uma jornada real sobre a dor devastadora do luto e a descoberta de que o amor verdadeiro é a única coisa que nos mantém de pé.
                 </p>
             </div>
 
-            <div class="space-y-3 mb-8">
+            <div class="space-y-4 mb-8">
                 <div data-aos="zoom-in" data-aos-delay="400">
-                    <div onclick="openCheckout('printed')" class="btn-primary gap-2 cursor-pointer">
-                        QUERO MEU LIVRO <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    <div onclick="openCheckout('printed')" class="btn-primary gap-2 cursor-pointer text-base py-4">
+                        QUERO MEU LIVRO <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </div>
                 </div>
                 <div data-aos="zoom-in" data-aos-delay="500">
-                    <a href="#trailer" class="btn-outline gap-2">
-                        <i data-lucide="play-circle" class="w-4 h-4"></i> ASSISTIR TRAILER
+                    <a href="#trailer" class="btn-outline gap-2 text-base py-4">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i> ASSISTIR TRAILER
                     </a>
                 </div>
             </div>
 
             <!-- Marketplaces -->
-            <div class="text-center border-t border-white/10 pt-6" data-aos="fade-in" data-aos-delay="600">
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-4">DISPONÍVEL EM:</p>
-                <div class="flex flex-wrap justify-center gap-4 mb-6">
-                    <div onclick="switchTab('amazon', 'https://www.amazon.com.br/dp/B0FG7F6N19', 'COMPRAR NA AMAZON')" class="market-tab active" id="tab-amazon"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" class="h-6 filter invert"></div>
-                    <div onclick="switchTab('uiclap', 'https://loja.uiclap.com/titulo/ua104467/', 'COMPRAR NA UICLAP')" class="market-tab" id="tab-uiclap"><span class="text-white font-bold font-serif text-lg">UICLAP</span></div>
-                    <div onclick="switchTab('ml', 'https://produto.mercadolivre.com.br/MLB-5326863840-livro-eu-existo-por-voc-_JM', 'COMPRAR NO MERCADO LIVRE')" class="market-tab" id="tab-ml"><img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.18.9/mercadolibre/logo__large_plus.png" class="h-5 filter invert brightness-0 sepia saturate-0 contrast-200"></div>
-                    <div onclick="switchTab('clube', 'https://clubedeautores.com.br/livro/eu-existo-por-voce', 'COMPRAR NO CLUBE')" class="market-tab" id="tab-clube"><div class="bg-purple-700 px-2 py-1 rounded text-white font-bold text-[10px] flex items-center gap-1"><i data-lucide="book-open" class="w-3 h-3"></i> CLUBE</div></div>
-                    <div onclick="switchTab('google', 'https://play.google.com/store/books/details/%C3%81damo_F_Costa_Eu_Existo_Por_Voc%C3%AA?id=fz90EQAAQBAJ&pli=1', 'COMPRAR NO GOOGLE PLAY')" class="market-tab" id="tab-google"><div class="bg-gradient-to-r from-blue-500 to-green-500 px-2 py-1 rounded text-white font-bold text-[10px] flex items-center gap-1"><i data-lucide="play" class="w-3 h-3 fill-current"></i> PLAY</div></div>
-                    <div onclick="switchTab('apple', 'https://books.apple.com/cz/book/eu-existo-por-voc%C3%AA/id6749249249', 'COMPRAR NO APPLE BOOKS')" class="market-tab" id="tab-apple"><div class="bg-gray-800 border border-gray-600 px-2 py-1 rounded text-white font-bold text-[10px] flex items-center gap-1"><i data-lucide="book" class="w-3 h-3"></i> APPLE</div></div>
+            <div class="text-center border-t border-white/10 pt-8" data-aos="fade-in" data-aos-delay="600">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-6">DISPONÍVEL EM:</p>
+                <div class="flex flex-wrap justify-center gap-6 mb-6">
+                    <div onclick="switchTab('amazon', 'https://www.amazon.com.br/dp/B0FG7F6N19', 'COMPRAR NA AMAZON')" class="market-tab active" id="tab-amazon"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" class="h-8 filter invert"></div>
+                    <div onclick="switchTab('uiclap', 'https://loja.uiclap.com/titulo/ua104467/', 'COMPRAR NA UICLAP')" class="market-tab" id="tab-uiclap"><span class="text-white font-bold font-serif text-xl">UICLAP</span></div>
+                    <div onclick="switchTab('ml', 'https://produto.mercadolivre.com.br/MLB-5326863840-livro-eu-existo-por-voc-_JM', 'COMPRAR NO MERCADO LIVRE')" class="market-tab" id="tab-ml"><img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.18.9/mercadolibre/logo__large_plus.png" class="h-6 filter invert brightness-0 sepia saturate-0 contrast-200"></div>
                 </div>
+                <!-- Linha 2 de Marketplaces -->
+                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                    <div onclick="switchTab('clube', 'https://clubedeautores.com.br/livro/eu-existo-por-voce', 'COMPRAR NO CLUBE')" class="market-tab" id="tab-clube"><div class="bg-purple-700 px-3 py-1.5 rounded text-white font-bold text-xs flex items-center gap-1"><i data-lucide="book-open" class="w-4 h-4"></i> CLUBE</div></div>
+                    <div onclick="switchTab('google', 'https://play.google.com/store/books/details/%C3%81damo_F_Costa_Eu_Existo_Por_Voc%C3%AA?id=fz90EQAAQBAJ&pli=1', 'COMPRAR NO GOOGLE PLAY')" class="market-tab" id="tab-google"><div class="bg-gradient-to-r from-blue-500 to-green-500 px-3 py-1.5 rounded text-white font-bold text-xs flex items-center gap-1"><i data-lucide="play" class="w-4 h-4 fill-current"></i> PLAY</div></div>
+                    <div onclick="switchTab('apple', 'https://books.apple.com/cz/book/eu-existo-por-voc%C3%AA/id6749249249', 'COMPRAR NO APPLE BOOKS')" class="market-tab" id="tab-apple"><div class="bg-gray-800 border border-gray-600 px-3 py-1.5 rounded text-white font-bold text-xs flex items-center gap-1"><i data-lucide="book" class="w-4 h-4"></i> APPLE</div></div>
+                </div>
+                
                 <div id="market-btn-container" class="hidden fade-in">
-                    <a id="market-link" href="#" target="_blank" class="btn-outline border-gold text-gold hover:bg-gold hover:text-black inline-flex items-center gap-2 text-xs py-3 px-8 w-auto">
-                        <span id="market-text">IR PARA A LOJA</span> <i data-lucide="external-link" class="w-3 h-3"></i>
+                    <a id="market-link" href="#" target="_blank" class="btn-outline border-gold text-gold hover:bg-gold hover:text-black inline-flex items-center gap-2 text-sm py-4 px-8 w-auto">
+                        <span id="market-text">IR PARA A LOJA</span> <i data-lucide="external-link" class="w-4 h-4"></i>
                     </a>
                 </div>
             </div>
@@ -400,8 +438,8 @@
   
         <!-- VÍDEO TRAILER E DEPOIMENTOS -->
         <div id="trailer" class="mb-16">
-            <div class="text-center mb-6" data-aos="fade-up">
-                <p class="text-gold text-[10px] uppercase tracking-widest font-bold mb-2">IMPACTO REAL</p>
+            <div class="text-center mb-8" data-aos="fade-up">
+                <p class="text-gold text-xs uppercase tracking-widest font-bold mb-2">IMPACTO REAL</p>
                 <h3 class="title-hero text-2xl">O QUE DIZEM SOBRE A OBRA</h3>
             </div>
             
@@ -412,7 +450,7 @@
 
              <!-- Depoimentos -->
              <div class="max-w-xs mx-auto" data-aos="fade-up" data-aos-delay="100">
-                <p class="text-center text-gray-400 text-[10px] uppercase tracking-widest mb-4">Depoimentos</p>
+                <p class="text-center text-gray-400 text-xs uppercase tracking-widest mb-4">Depoimentos</p>
                 <div class="aspect-[9/16] border border-white/10 rounded shadow-xl overflow-hidden bg-black">
                     <iframe class="w-full h-full" src="https://www.youtube.com/embed/PwrTxysB27s" title="Depoimentos" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
@@ -420,15 +458,15 @@
         </div>
 
         <!-- DEDICATÓRIA -->
-        <div class="text-center mb-16 px-4 border-y border-white/5 py-10" data-aos="fade-up">
-            <i data-lucide="heart" class="w-6 h-6 text-gold mx-auto mb-4 opacity-70"></i>
-            <h3 class="text-[10px] text-gold uppercase tracking-[0.2em] mb-4">DEDICATÓRIA</h3>
-            <p class="text-gray-300 font-serif italic text-base leading-relaxed">
+        <div class="text-center mb-16 px-6 border-y border-white/5 py-12" data-aos="fade-up">
+            <i data-lucide="heart" class="w-8 h-8 text-gold mx-auto mb-6 opacity-70"></i>
+            <h3 class="text-xs text-gold uppercase tracking-[0.2em] mb-6">DEDICATÓRIA</h3>
+            <p class="text-gray-300 font-serif italic text-lg leading-relaxed">
                 "Em memória de minha esposa amada e de meu querido pai, que permanecem vivos em cada lembrança e gesto de amor... Vocês foram, são e sempre serão a minha força e minha inspiração. Esta história é para vocês."
             </p>
         </div>
 
-        <!-- CAPÍTULOS COM LEITURA -->
+        <!-- CAPÍTULOS COM LEITURA (INTERATIVO) -->
         <div class="mb-16">
             <div class="text-center mb-8" data-aos="fade-up">
                 <h3 class="title-hero text-2xl uppercase mb-2">FRAGMENTOS DE UMA VIDA</h3>
@@ -507,40 +545,40 @@
         <div class="mb-16">
             <div class="text-center mb-8" data-aos="fade-down">
                 <h3 class="title-hero text-xl uppercase mb-2">QUEM VIVE NESTAS PÁGINAS</h3>
-                <div class="w-8 h-0.5 bg-gold mx-auto"></div>
+                <div class="w-12 h-0.5 bg-gold mx-auto"></div>
             </div>
             
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-4">
                 <!-- CAMILA -->
-                <div class="bg-black aspect-square relative group overflow-hidden" data-aos="flip-left" data-aos-delay="0">
+                <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-left" data-aos-delay="0">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/camila.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
                         <p class="title-hero text-sm">CAMILA</p>
-                        <p class="text-[8px] text-gold uppercase">AMOR ETERNO</p>
+                        <p class="text-[10px] text-gold uppercase">AMOR ETERNO</p>
                     </div>
                 </div>
                 <!-- GABI -->
-                <div class="bg-black aspect-square relative group overflow-hidden" data-aos="flip-right" data-aos-delay="100">
+                <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-right" data-aos-delay="100">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/gabriela.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
                         <p class="title-hero text-sm">GABI</p>
-                        <p class="text-[8px] text-gold uppercase">A GUERREIRA</p>
+                        <p class="text-[10px] text-gold uppercase">A GUERREIRA</p>
                     </div>
                 </div>
                 <!-- SPYKE -->
-                <div class="bg-black aspect-square relative group overflow-hidden" data-aos="flip-left" data-aos-delay="200">
+                <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-left" data-aos-delay="200">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/Spyke.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
                         <p class="title-hero text-sm">SPYKE</p>
-                        <p class="text-[8px] text-gold uppercase">O GUARDIÃO</p>
+                        <p class="text-[10px] text-gold uppercase">O GUARDIÃO</p>
                     </div>
                 </div>
                 <!-- O PAI -->
-                <div class="bg-black aspect-square relative group overflow-hidden" data-aos="flip-right" data-aos-delay="300">
+                <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-right" data-aos-delay="300">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/adamo.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
                         <p class="title-hero text-sm">O PAI</p>
-                        <p class="text-[8px] text-gold uppercase">O EXEMPLO</p>
+                        <p class="text-[10px] text-gold uppercase">O EXEMPLO</p>
                     </div>
                 </div>
             </div>
@@ -552,19 +590,19 @@
                 <h2 class="title-serif text-xl">MOMENTOS INESQUECÍVEIS</h2>
                 <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">GALERIA REAL</p>
             </div>
-            <div class="space-y-4">
-                <div class="aspect-video relative rounded-sm overflow-hidden border border-white/10 group" data-aos="fade-up">
+            <div class="space-y-6">
+                <div class="aspect-video relative rounded-sm overflow-hidden border border-white/10 group shadow-lg" data-aos="fade-up">
                     <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500">
-                    <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
-                        <p class="title-serif text-lg">O CASAMENTO</p>
-                        <p class="text-sm text-gold italic line-clamp-2">"Ela era a noiva mais linda que já vi em toda a minha vida."</p>
+                    <div class="absolute bottom-0 w-full p-5 bg-gradient-to-t from-black to-transparent">
+                        <p class="title-serif text-xl">O CASAMENTO</p>
+                        <p class="text-sm text-gold italic line-clamp-2 leading-snug">"Ela era a noiva mais linda que já vi em toda a minha vida."</p>
                     </div>
                 </div>
-                <div class="aspect-video relative rounded-sm overflow-hidden border border-white/10 group" data-aos="fade-up">
+                <div class="aspect-video relative rounded-sm overflow-hidden border border-white/10 group shadow-lg" data-aos="fade-up">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/FamiliaUnida.jpg" class="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500">
-                    <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
-                        <p class="title-serif text-lg">FAMÍLIA UNIDA</p>
-                        <p class="text-sm text-gold italic line-clamp-2">"Ela dormia no meu colo enquanto eu lidava com um turbilhão de sentimentos."</p>
+                    <div class="absolute bottom-0 w-full p-5 bg-gradient-to-t from-black to-transparent">
+                        <p class="title-serif text-xl">FAMÍLIA UNIDA</p>
+                        <p class="text-sm text-gold italic line-clamp-2 leading-snug">"Ela dormia no meu colo enquanto eu lidava com um turbilhão de sentimentos."</p>
                     </div>
                 </div>
             </div>
@@ -572,8 +610,8 @@
 
         <!-- COMPARTILHE SUA HISTÓRIA -->
         <div class="bg-[#0B0F19] p-8 text-center border-l-4 border-gold mb-16 shadow-lg" data-aos="fade-right">
-            <h3 class="title-hero text-lg mb-4">COMPARTILHE SUA HISTÓRIA</h3>
-            <p class="text-gray-400 text-sm italic mb-6 leading-relaxed">
+            <h3 class="title-hero text-xl mb-4">COMPARTILHE SUA HISTÓRIA</h3>
+            <p class="text-gray-400 text-base italic mb-6 leading-relaxed">
                 "Assim como cada página aqui traz um pedaço meu, sei que você também carrega em sua vida momentos únicos. Eu o convido a abrir seu coração."
             </p>
             <p class="text-gold font-bold text-sm mb-1">Use #LivroEuExistoPorVoce</p>
@@ -582,32 +620,32 @@
 
         <!-- AUTOR -->
         <div class="text-center mb-16">
-            <div class="w-28 h-28 mx-auto rounded-full p-1 border border-gold/30 mb-4" data-aos="zoom-in">
+            <div class="w-32 h-32 mx-auto rounded-full p-1 border border-gold/30 mb-4" data-aos="zoom-in">
                 <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/adamo.jpg" alt="Autor" class="w-full h-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
             </div>
-            <h3 class="title-hero text-xl mb-1" data-aos="fade-up">ÁDAMO F. COSTA</h3>
-            <p class="text-gold text-[9px] uppercase tracking-[0.3em] mb-6 font-bold" data-aos="fade-up" data-aos-delay="100">AUTOR & PAI</p>
+            <h3 class="title-hero text-2xl mb-1" data-aos="fade-up">ÁDAMO F. COSTA</h3>
+            <p class="text-gold text-xs uppercase tracking-[0.3em] mb-6 font-bold" data-aos="fade-up" data-aos-delay="100">AUTOR & PAI</p>
             
             <p class="text-gray-400 text-sm italic leading-relaxed px-4" data-aos="fade-up" data-aos-delay="200">
                 "Não escrevi com a mente, nem apenas com o coração; elas nasceram da força da minha alma."
             </p>
             
             <!-- REDES SOCIAIS -->
-            <div class="flex flex-wrap justify-center gap-4 mt-8 text-[10px] font-bold text-gray-500 tracking-widest" data-aos="fade-in" data-aos-delay="300">
+            <div class="flex flex-wrap justify-center gap-6 mt-8 text-[10px] font-bold text-gray-500 tracking-widest" data-aos="fade-in" data-aos-delay="300">
                 <a href="https://api.whatsapp.com/send/?phone=5519991950005" target="_blank" class="hover:text-gold flex flex-col items-center gap-2 transition-colors w-16">
-                    <div class="w-8 h-8 rounded-full bg-green-900/30 flex items-center justify-center border border-green-700"><i data-lucide="phone" class="w-4 h-4 text-green-500"></i></div><span>WHATS</span>
+                    <div class="w-10 h-10 rounded-full bg-green-900/30 flex items-center justify-center border border-green-700"><i data-lucide="phone" class="w-5 h-5 text-green-500"></i></div><span>WHATS</span>
                 </a>
                 <a href="https://www.instagram.com/LivroEuExistoPorVoce.com.br/" target="_blank" class="hover:text-gold flex flex-col items-center gap-2 transition-colors w-16">
-                    <div class="w-8 h-8 rounded-full bg-pink-900/30 flex items-center justify-center border border-pink-700"><i data-lucide="instagram" class="w-4 h-4 text-pink-500"></i></div><span>INSTA</span>
+                    <div class="w-10 h-10 rounded-full bg-pink-900/30 flex items-center justify-center border border-pink-700"><i data-lucide="instagram" class="w-5 h-5 text-pink-500"></i></div><span>INSTA</span>
                 </a>
                 <a href="https://www.facebook.com/LivroEuExistoPorVoce/" target="_blank" class="hover:text-gold flex flex-col items-center gap-2 transition-colors w-16">
-                    <div class="w-8 h-8 rounded-full bg-blue-900/30 flex items-center justify-center border border-blue-700"><i data-lucide="facebook" class="w-4 h-4 text-blue-500"></i></div><span>FACE</span>
+                    <div class="w-10 h-10 rounded-full bg-blue-900/30 flex items-center justify-center border border-blue-700"><i data-lucide="facebook" class="w-5 h-5 text-blue-500"></i></div><span>FACE</span>
                 </a>
                 <a href="https://tiktok.com/@livro.eu.existo.por.voce?_r=1&_t=ZS-91ZgLndCn7" target="_blank" class="hover:text-gold flex flex-col items-center gap-2 transition-colors w-16">
-                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center border border-gray-600"><i data-lucide="video" class="w-4 h-4 text-white"></i></div><span>TIKTOK</span>
+                    <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-600"><i data-lucide="video" class="w-5 h-5 text-white"></i></div><span>TIKTOK</span>
                 </a>
                  <a href="https://kwai.com/@livroeuexistoporvoce" target="_blank" class="hover:text-gold flex flex-col items-center gap-2 transition-colors w-16">
-                    <div class="w-8 h-8 rounded-full bg-orange-900/30 flex items-center justify-center border border-orange-600"><i data-lucide="play-circle" class="w-4 h-4 text-orange-500"></i></div><span>KWAI</span>
+                    <div class="w-10 h-10 rounded-full bg-orange-900/30 flex items-center justify-center border border-orange-600"><i data-lucide="play-circle" class="w-5 h-5 text-orange-500"></i></div><span>KWAI</span>
                 </a>
             </div>
         </div>
@@ -617,43 +655,43 @@
             <div class="text-center mb-8" data-aos="fade-up">
                 <h2 class="title-hero text-2xl uppercase mb-2">ADQUIRA SUA CÓPIA</h2>
                 <h2 class="title-hero text-2xl uppercase">AGORA</h2>
-                <p class="text-gray-500 text-xs mt-4 px-6">Escolha a versão ideal para você.</p>
+                <p class="text-gray-500 text-sm mt-4 px-6">Escolha a versão ideal para você.</p>
             </div>
 
             <!-- Seletor de Abas -->
             <div class="flex justify-center gap-2 mb-6 max-w-xs mx-auto" data-aos="fade-down">
-                <div onclick="switchPrice('printed')" id="tab-printed" class="price-tab active rounded-l-sm">
+                <div onclick="switchPrice('printed')" id="tab-printed" class="price-tab active rounded-l-sm text-sm py-3">
                     <i data-lucide="book" class="w-4 h-4"></i> LIVRO IMPRESSO
                 </div>
-                <div onclick="switchPrice('ebook')" id="tab-ebook" class="price-tab rounded-r-sm">
+                <div onclick="switchPrice('ebook')" id="tab-ebook" class="price-tab rounded-r-sm text-sm py-3">
                     <i data-lucide="smartphone" class="w-4 h-4"></i> E-BOOK
                 </div>
             </div>
 
             <!-- BOX DE PREÇO -->
-            <div class="price-box relative" data-aos="zoom-in-up" data-aos-duration="1000">
-                <p id="price-title" class="text-gray-400 text-[10px] uppercase tracking-widest mb-2 text-center">LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK</p>
+            <div class="price-box relative shadow-lg" data-aos="zoom-in-up" data-aos-duration="1000">
+                <p id="price-title" class="text-gray-400 text-xs uppercase tracking-widest mb-4 text-center font-bold">LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK</p>
                 
                 <div class="flex justify-center items-center gap-4 mb-8">
                     <div class="text-right">
-                        <p class="text-gray-500 text-[10px] font-bold">R$</p>
-                        <p id="price-old" class="text-gray-600 text-xs line-through">109,83</p>
+                        <p class="text-gray-500 text-xs font-bold">R$</p>
+                        <p id="price-old" class="text-gray-600 text-sm line-through">109,83</p>
                     </div>
-                    <div class="text-gold font-serif font-bold text-6xl leading-none">
+                    <div class="text-gold font-serif font-bold text-5xl leading-none">
                         <span class="text-2xl align-top mr-1">R$</span><span id="price-current">64,69</span>
                     </div>
                 </div>
 
-                <div id="price-features" class="space-y-3 mb-8 px-2">
+                <div id="price-features" class="space-y-4 mb-8 px-2">
                     <!-- Conteúdo inserido via JS -->
                 </div>
 
                 <!-- O botão agora abre o Modal de Checkout -->
-                <div onclick="openCheckout('printed')" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform cursor-pointer">
+                <div onclick="openCheckout('printed')" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform cursor-pointer text-base py-4 font-bold shadow-lg">
                     QUERO MEU LIVRO FÍSICO!
                 </div>
 
-                <div class="text-center text-[9px] text-gray-500 flex items-center justify-center gap-1 uppercase tracking-widest">
+                <div class="text-center text-[10px] text-gray-500 flex items-center justify-center gap-1 uppercase tracking-widest mt-4">
                     <i data-lucide="lock" class="w-3 h-3"></i> Pagamento 100% Seguro
                 </div>
             </div>
@@ -661,46 +699,46 @@
 
         <!-- GARANTIA -->
         <div class="text-center mb-12 px-6" data-aos="fade-up">
-            <div class="inline-block p-3 rounded-full bg-gold/5 mb-4">
-                <i data-lucide="shield-check" class="w-10 h-10 text-gold mx-auto"></i>
+            <div class="inline-block p-4 rounded-full bg-gold/5 mb-4 border border-gold/20">
+                <i data-lucide="shield-check" class="w-8 h-8 text-gold mx-auto"></i>
             </div>
             <h4 class="title-hero text-lg mb-2">GARANTIA DE 7 DIAS</h4>
-            <p class="text-xs text-gray-400 leading-relaxed">
+            <p class="text-sm text-gray-400 leading-relaxed max-w-md mx-auto">
                 Seu dinheiro de volta sem perguntas caso não fique satisfeito. Risco zero para você.
             </p>
         </div>
 
         <!-- FAQ -->
-        <div class="space-y-1 mb-16 border-t border-white/5 pt-8">
-            <div class="faq-item px-4 py-4 cursor-pointer" onclick="this.classList.toggle('faq-open')" data-aos="fade-up">
+        <div class="space-y-2 mb-16 border-t border-white/5 pt-10">
+            <div class="faq-item px-4 py-5 cursor-pointer rounded" onclick="this.classList.toggle('faq-open')" data-aos="fade-up">
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-white text-xs uppercase tracking-wide">Como recebo o livro?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-gold faq-icon"></i>
+                    <span class="font-bold text-white text-sm uppercase tracking-wide">Como recebo o livro?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gold faq-icon"></i>
                 </div>
                 <div class="faq-content">
-                    <div class="pt-4 text-gray-400 text-xs leading-relaxed mt-2">
+                    <div class="pt-4 text-gray-400 text-sm leading-relaxed mt-2">
                         Acesso imediato por e-mail após a confirmação do pagamento. Você pode ler no celular, tablet ou computador.
                     </div>
                 </div>
             </div>
-            <div class="faq-item px-4 py-4 cursor-pointer" onclick="this.classList.toggle('faq-open')" data-aos="fade-up" data-aos-delay="100">
+            <div class="faq-item px-4 py-5 cursor-pointer rounded" onclick="this.classList.toggle('faq-open')" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-white text-xs uppercase tracking-wide">Quais as formas de pagamento?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-gold faq-icon"></i>
+                    <span class="font-bold text-white text-sm uppercase tracking-wide">Quais as formas de pagamento?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gold faq-icon"></i>
                 </div>
                 <div class="faq-content">
-                    <div class="pt-4 text-gray-400 text-xs leading-relaxed mt-2">
+                    <div class="pt-4 text-gray-400 text-sm leading-relaxed mt-2">
                         Cartão de crédito, PIX, boleto bancário e PayPal. Tudo processado de forma segura pela Hotmart.
                     </div>
                 </div>
             </div>
-             <div class="faq-item px-4 py-4 cursor-pointer" onclick="this.classList.toggle('faq-open')" data-aos="fade-up" data-aos-delay="200">
+             <div class="faq-item px-4 py-5 cursor-pointer rounded" onclick="this.classList.toggle('faq-open')" data-aos="fade-up" data-aos-delay="200">
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-white text-xs uppercase tracking-wide">Como funciona a garantia?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-gold faq-icon"></i>
+                    <span class="font-bold text-white text-sm uppercase tracking-wide">Como funciona a garantia?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gold faq-icon"></i>
                 </div>
                 <div class="faq-content">
-                    <div class="pt-4 text-gray-400 text-xs leading-relaxed mt-2">
+                    <div class="pt-4 text-gray-400 text-sm leading-relaxed mt-2">
                         Você tem 7 dias para testar. Se não gostar, é só pedir reembolso.
                     </div>
                 </div>
@@ -708,10 +746,10 @@
         </div>
         
         <!-- FOOTER -->
-        <footer class="text-center text-[10px] text-gray-600 uppercase tracking-widest pb-20 border-t border-white/5 pt-8" data-aos="fade-in">
+        <footer class="text-center text-[10px] text-gray-600 uppercase tracking-widest pb-24 border-t border-white/5 pt-10" data-aos="fade-in">
             <p class="text-white font-serif text-sm mb-2">Eu Existo Por Você</p>
-            <p class="mb-4">© 2024 Ádamo F. Costa</p>
-            <div class="flex justify-center gap-4">
+            <p class="mb-6">© 2024 Ádamo F. Costa</p>
+            <div class="flex justify-center gap-6">
                 <a href="#" class="hover:text-gold transition-colors">Termos</a>
                 <a href="#" class="hover:text-gold transition-colors">Privacidade</a>
             </div>
@@ -719,16 +757,16 @@
     </div>
 
     <!-- PLAYER DE MÚSICA FLUTUANTE -->
-    <div id="floating-player" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 music-float px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 w-max" data-aos="fade-up" data-aos-offset="0" onclick="toggleMusic()">
-        <div class="relative w-8 h-8 flex items-center justify-center bg-black/50 rounded-full border border-gold/30">
+    <div id="floating-player" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 music-float px-5 py-3 rounded-full shadow-2xl flex items-center gap-4 w-max cursor-pointer border border-gold/30 bg-[#04060C]/90 backdrop-blur-md" data-aos="fade-up" data-aos-offset="0" onclick="toggleMusic()">
+        <div class="relative w-10 h-10 flex items-center justify-center bg-black/50 rounded-full border border-gold/30">
             <div class="music-wave absolute inset-0 bg-gold/20 rounded-full h-full w-full"></div>
-            <i id="music-icon" data-lucide="music" class="w-3 h-3 text-gold relative z-10"></i>
+            <i id="music-icon" data-lucide="music" class="w-4 h-4 text-gold relative z-10"></i>
         </div>
         <div class="text-left">
-            <p class="text-[8px] text-gold uppercase tracking-widest">Soundtrack</p>
-            <p id="music-status" class="text-[10px] text-white font-bold">Tocar Música</p>
+            <p class="text-[9px] text-gold uppercase tracking-widest">Soundtrack</p>
+            <p id="music-status" class="text-xs text-white font-bold">Tocar Música</p>
         </div>
-        <i id="play-icon" data-lucide="play" class="w-3 h-3 text-white ml-2 fill-current"></i>
+        <i id="play-icon" data-lucide="play" class="w-4 h-4 text-white ml-2 fill-current"></i>
     </div>
 
     <!-- MODAIS DE LEITURA (Introdução e Capítulos 1-4) -->
@@ -766,25 +804,26 @@
                     <input type="tel" id="checkout-whatsapp" placeholder="WhatsApp (com DDD)" class="checkout-input">
                     
                     <!-- Botão de Ação Final (Redirecionamento JavaScript) -->
-                    <div onclick="processPayment()" class="btn-primary w-full mt-6 text-base cursor-pointer">
-                        <i data-lucide="lock" class="w-4 h-4 mr-2"></i> IR PARA PAGAMENTO SEGURO
+                    <div onclick="processPayment()" class="btn-primary w-full mt-6 text-base cursor-pointer py-4 font-bold shadow-md hover:shadow-gold/20">
+                        <i data-lucide="lock" class="w-5 h-5 mr-2"></i> IR PARA PAGAMENTO SEGURO
                     </div>
                     
-                    <div class="flex justify-center gap-4 mt-4 opacity-50">
+                    <div class="flex justify-center gap-4 mt-6 opacity-50 grayscale">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logomarca_Mercado_Pago.png" class="h-6 filter invert brightness-0">
                         <img src="https://logodownload.org/wp-content/uploads/2019/06/pagseguro-logo-1.png" class="h-6 filter invert brightness-0">
                     </div>
                 </div>
 
                 <!-- Coluna Direita: Resumo -->
-                <div class="checkout-summary">
+                <div class="checkout-summary mt-4 md:mt-0">
                     <p class="text-gold text-xs font-bold uppercase tracking-widest mb-4">RESUMO DO PEDIDO</p>
                     <div class="flex gap-4 mb-4">
-                        <!-- Capa do Livro Atualizada -->
-                        <img src="https://i.postimg.cc/Qt3jvfJK/Screenshot-20250609-161632-2-(1).png" class="w-16 h-24 object-cover rounded border border-gold/30">
+                        <!-- Capa do Livro Atualizada para a nova imagem -->
+                        <img src="https://i.postimg.cc/Qt3jvfJK/Screenshot-20250609-161632-2-(1).png" class="w-20 h-28 object-cover rounded border border-gold/30 shadow-md">
                         <div>
-                            <p id="checkout-product-title" class="text-white text-sm font-bold leading-tight mb-1">Livro Eu Existo Por Você</p>
-                            <p class="text-gray-400 text-xs">Autor: Ádamo F. Costa</p>
+                            <p id="checkout-product-title" class="text-white text-sm font-bold leading-tight mb-2">Livro Eu Existo Por Você</p>
+                            <p class="text-gray-400 text-xs mb-1">Autor: Ádamo F. Costa</p>
+                            <p class="text-green-500 text-xs font-bold">Em Estoque</p>
                         </div>
                     </div>
                     
@@ -793,15 +832,15 @@
                             <span>Preço:</span>
                             <span class="line-through" id="checkout-old-price">R$ 109,83</span>
                         </div>
-                        <div class="flex justify-between text-xl text-gold font-bold">
+                        <div class="flex justify-between text-2xl text-gold font-bold">
                             <span>Total:</span>
                             <span id="checkout-price">R$ 64,69</span>
                         </div>
                     </div>
 
-                    <div class="secure-badge">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i> 
-                        Compra 100% Segura
+                    <div class="secure-badge bg-[#111625] py-3 rounded border border-white/5">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-green-500"></i> 
+                        <span class="text-gray-300 text-xs">Compra 100% Segura</span>
                     </div>
                 </div>
             </div>
@@ -821,7 +860,7 @@
 
         lucide.createIcons();
         
-        // Lógica da Música
+        // Lógica da Música (Link Github Correto)
         const bgMusic = document.getElementById('bg-music');
         const floatingPlayer = document.getElementById('floating-player');
         const musicStatus = document.getElementById('music-status');
@@ -858,7 +897,7 @@
         }, { once: true }); 
 
         // --- CONFIGURAÇÃO DOS LINKS DE PAGAMENTO ---
-        // Substitua os links abaixo pelos seus links reais do Mercado Pago ou PagSeguro
+        // Substitua pelos seus links reais do Mercado Pago
         const paymentLinks = {
             printed: "https://link-do-mercado-pago-livro-fisico.com", 
             ebook: "https://link-do-mercado-pago-ebook.com"         
@@ -868,7 +907,7 @@
 
         // Lógica de Preços (Abas)
         function switchPrice(type) {
-            currentProductType = type; // Atualiza o tipo selecionado
+            currentProductType = type; 
             
             document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + type).classList.add('active');
@@ -884,14 +923,14 @@
             if (type === 'printed') {
                 priceTitle.innerText = "LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK";
                 priceOld.innerText = "109,83";
-                priceCurrent.innerText = "64,69";
+                priceCurrent.innerText = "64,69"; // Preço Atualizado
                 priceBtn.innerText = "QUERO MEU LIVRO FÍSICO!";
                 
                 priceFeatures.innerHTML = `
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Livro Impresso (Capa Flexível)</p>
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Audio Book Narrado (Bônus)</p>
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Entrega via Correios</p>
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="gift" class="w-4 h-4 text-gold"></i> Marcador de Páginas Exclusivo</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Livro Impresso (Capa Flexível)</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Audio Book Narrado (Bônus)</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Entrega via Correios</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="gift" class="w-5 h-5 text-gold"></i> Marcador de Páginas Exclusivo</p>
                 `;
             } else {
                 priceTitle.innerText = "E-BOOK COMPLETO + AUDIO BOOK";
@@ -900,10 +939,10 @@
                 priceBtn.innerText = "QUERO MEU E-BOOK!";
                 
                 priceFeatures.innerHTML = `
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Livro Digital (PDF/EPUB)</p>
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Audio Book Narrado</p>
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Entrega Imediata por E-mail</p>
-                    <p class="flex items-center gap-3 text-xs text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="check-circle" class="w-4 h-4 text-gold"></i> Sem Custo de Frete</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Livro Digital (PDF/EPUB)</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Audio Book Narrado</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Entrega Imediata por E-mail</p>
+                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Sem Custo de Frete</p>
                 `;
             }
             lucide.createIcons();
@@ -957,7 +996,6 @@
             const productPrice = document.getElementById('checkout-price');
             const productOldPrice = document.getElementById('checkout-old-price');
 
-            // Configura o conteúdo do modal
             if (type === 'printed') {
                 productTitle.innerText = "Livro Impresso (Capa Flexível) + Audio Book";
                 productPrice.innerText = "R$ 64,69";
@@ -976,21 +1014,23 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // Processar Pagamento e Redirecionar
+        // Processar Pagamento
         function processPayment() {
-            // Validação simples
             const name = document.getElementById('checkout-name').value;
             const email = document.getElementById('checkout-email').value;
             const cpf = document.getElementById('checkout-cpf').value;
             const phone = document.getElementById('checkout-phone').value;
+            const whatsapp = document.getElementById('checkout-whatsapp').value;
 
-            if (!name || !email || !cpf || !phone) {
+            if (!name || !email || !cpf || !phone || !whatsapp) {
                 alert("Por favor, preencha todos os campos para continuar.");
                 return;
             }
             
-            // Redireciona direto para o link de pagamento configurado
+            // Link de pagamento correto
             const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
+            
+            // Abre o link de pagamento em uma nova aba
             window.open(finalLink, '_blank');
         }
 
@@ -1022,7 +1062,7 @@
             }
         }
 
-        // Máscaras de Input
+        // Máscaras
         document.addEventListener('DOMContentLoaded', function () {
             const phoneMask = IMask(document.getElementById('checkout-phone'), { mask: '(00) 00000-0000' });
             const whatsappMask = IMask(document.getElementById('checkout-whatsapp'), { mask: '(00) 00000-0000' });
