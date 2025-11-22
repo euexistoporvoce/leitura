@@ -769,10 +769,16 @@
                 </div>
 
                 <div id="admin-view-clients" class="hidden space-y-4">
-                    <div class="flex gap-2 mb-4">
-                        <input type="text" id="admin-search-client" placeholder="Buscar cliente (Nome, Email, CPF)..." class="checkout-input mb-0" onkeyup="filterAdminList('client')">
-                        <button onclick="loadAdminClients()" class="btn-primary w-auto px-4 py-2 text-xs"><i data-lucide="refresh-cw"></i></button>
-                    </div>
+            <div class="flex gap-2 mb-4">
+    <input type="text" id="admin-search-client" placeholder="Buscar cliente..." class="checkout-input mb-0" onkeyup="filterAdminList('client')">
+    <button onclick="openAddClientModal()" class="btn-primary w-auto px-4 py-2 text-xs bg-green-600 hover:bg-green-500 border-none text-white">
+        <i data-lucide="plus"></i>
+    </button>
+    <button onclick="loadAdminClients()" class="btn-primary w-auto px-4 py-2 text-xs"><i data-lucide="refresh-cw"></i></button>
+</div>
+                    
+                    
+                    
                     <div id="admin-clients-list" class="grid grid-cols-1 gap-3"></div>
                 </div>
 
@@ -783,33 +789,77 @@
 
     
     <!-- MODAL DE AUTH (LOGIN/CADASTRO) -->
-    <div id="modal-auth" class="auth-modal">
-        <div class="auth-container">
-            <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">ÁREA DO LEITOR</p>
-                    <h3 id="auth-title" class="text-white font-serif text-xl">CRIAR CONTA</h3>
-                </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-auth')"></i>
+   <div id="modal-auth" class="auth-modal">
+    <div class="auth-container">
+        <div class="modal-header">
+            <div>
+                <p class="text-gold text-[10px] font-bold uppercase tracking-widest" id="wizard-step-indicator">PASSO 1 DE 3</p>
+                <h3 id="auth-title" class="text-white font-serif text-xl">CRIAR CONTA</h3>
             </div>
-            <div class="p-6">
-                <form id="auth-form">
-                    <div id="register-fields">
-                        <input type="text" id="auth-name" placeholder="Nome Completo" class="checkout-input" style="border: 1px solid #333;">
+            <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-auth')"></i>
+        </div>
+        
+        <div class="p-6">
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                
+                <div id="step-1" class="step-content fade-in">
+                    <div id="login-fields" class="hidden">
+                         <input type="email" id="login-email" placeholder="E-mail" class="checkout-input">
+                        <input type="password" id="login-password" placeholder="Senha" class="checkout-input">
                     </div>
-                    <input type="email" id="auth-email" placeholder="E-mail" class="checkout-input" style="border: 1px solid #333;" required>
-                    <input type="password" id="auth-password" placeholder="Senha (mínimo 6 caracteres)" class="checkout-input" style="border: 1px solid #333;" required>
                     
-                    <button type="submit" class="btn-primary w-full mt-4 text-base font-bold shadow-md">
-                        <span id="auth-btn-text">CRIAR CONTA E CONTINUAR</span>
+                    <div id="register-step-1">
+                        <input type="text" id="reg-name" placeholder="Nome Completo" class="checkout-input">
+                        <input type="email" id="reg-email" placeholder="E-mail" class="checkout-input">
+                        <input type="password" id="reg-password" placeholder="Senha (mín. 6 caracteres)" class="checkout-input">
+                    </div>
+                </div>
+
+                <div id="step-2" class="step-content hidden fade-in">
+                    <p class="text-gray-400 text-sm mb-4">Precisamos dos seus dados para a Nota Fiscal.</p>
+                    <input type="text" id="reg-cpf" placeholder="CPF (000.000.000-00)" class="checkout-input">
+                    <input type="text" id="reg-phone" placeholder="Celular" class="checkout-input">
+                    <input type="text" id="reg-whatsapp" placeholder="WhatsApp" class="checkout-input">
+                </div>
+
+                <div id="step-3" class="step-content hidden fade-in">
+                    <p class="text-gray-400 text-sm mb-4">Para onde devemos enviar?</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="reg-cep" placeholder="CEP" class="checkout-input" onblur="buscarEndereco(this.value)">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="reg-city" placeholder="Cidade" class="checkout-input flex-1">
+                        <input type="text" id="reg-state" placeholder="UF" class="checkout-input w-16">
+                    </div>
+                    <input type="text" id="reg-street" placeholder="Rua / Avenida" class="checkout-input">
+                    <div class="flex gap-2">
+                        <input type="text" id="reg-number" placeholder="Número" class="checkout-input w-24">
+                        <input type="text" id="reg-comp" placeholder="Complemento" class="checkout-input flex-1">
+                    </div>
+                    <input type="text" id="reg-district" placeholder="Bairro" class="checkout-input">
+                </div>
+
+                <div class="mt-6 flex flex-col gap-3">
+                    <button type="button" id="btn-next" onclick="nextStep()" class="btn-primary w-full text-base font-bold shadow-md">
+                        CONTINUAR <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
                     </button>
-                </form>
-                <p class="text-center text-gray-400 text-xs mt-4 cursor-pointer hover:text-white" onclick="toggleAuthMode()">
-                    <span id="auth-switch-text">Já tem conta? Fazer Login</span>
-                </p>
-            </div>
+                    
+                    <button type="submit" id="btn-submit" class="hidden btn-primary w-full text-base font-bold shadow-md bg-green-600 hover:bg-green-500 text-white border-none">
+                        FINALIZAR CADASTRO E PAGAR
+                    </button>
+                    
+                    <button type="button" id="btn-login-action" onclick="performLogin()" class="hidden btn-primary w-full">
+                        ENTRAR
+                    </button>
+
+                    <p class="text-center text-gray-400 text-xs cursor-pointer hover:text-white" onclick="toggleAuthMode()">
+                        <span id="auth-switch-text">Já tem conta? Fazer Login</span>
+                    </p>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
     <!-- MODAL DE MINHA CONTA -->
     <div id="modal-account" class="account-modal">
@@ -1015,7 +1065,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
-        // --- CONFIGURAÇÃO DO FIREBASE ---
+     // --- CONFIGURAÇÃO DO FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBbdp4ugMhLTcU6z0jxsF865FGwI0ypnEw",
             authDomain: "eu-existo-por-voce.firebaseapp.com",
@@ -1029,39 +1079,42 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        // Funções para backend
         const functions = firebase.functions(); 
 
-        // --- CONFIGURAÇÃO LINKS MERCADO PAGO ---
-        // Se o usuário estiver logado, o código abaixo chama a função de backend "criarPagamento" 
-        // em vez de usar links fixos, garantindo que o pedido seja criado no banco de dados.
-        
+        // --- VARIÁVEIS GLOBAIS ---
         let currentUser = null;
         let currentProductAmount = 64.69;
         let currentProductName = 'Livro Físico';
+        
+        // Variáveis do Wizard
+        let currentStep = 1;
         let isRegistering = true;
 
-        // Verifica estado do login ao carregar
-      // Verifica estado do login e Permissão de Admin
-auth.onAuthStateChanged(user => {
-    if (user) {
-        currentUser = user;
-        document.getElementById('btn-account').classList.remove('hidden');
+        // CONFIGURAÇÕES DE LINKS (Coloque seus links reais aqui)
+        const LINK_PAGAMENTO_LIVRO = "https://link.mercadopago.com.br/SEU_LINK_LIVRO"; 
+        const LINK_PAGAMENTO_EBOOK = "https://link.mercadopago.com.br/SEU_LINK_EBOOK";
+        const FORMSPREE_ENDPOINT = "https://formspree.io/f/SEU_CODIGO_FORMSPREE"; // Crie um form grátis no formspree.io
 
-        // Verifica se é ADMIN no banco de dados
-        db.collection('users').doc(user.uid).get().then(doc => {
-            if (doc.exists && doc.data().role === 'admin') {
-                document.getElementById('btn-admin').classList.remove('hidden');
+        // VERIFICAÇÃO DE LOGIN E ADMIN
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('btn-account').classList.remove('hidden');
+
+                // Verifica se é ADMIN no banco de dados
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists && doc.data().role === 'admin') {
+                        document.getElementById('btn-admin').classList.remove('hidden');
+                    }
+                });
+            } else {
+                currentUser = null;
+                document.getElementById('btn-account').classList.add('hidden');
+                document.getElementById('btn-admin').classList.add('hidden');
             }
         });
-    } else {
-        currentUser = null;
-        document.getElementById('btn-account').classList.add('hidden');
-        document.getElementById('btn-admin').classList.add('hidden');
-    }
-});
 
-        // Funções de Fluxo de Compra
+        // --- LÓGICA DE COMPRA (CORRIGIDA) ---
         function checkLoginAndBuy(type) {
             if (type === 'printed') {
                 currentProductAmount = 64.69;
@@ -1072,147 +1125,657 @@ auth.onAuthStateChanged(user => {
             }
 
             if (currentUser) {
-                // Já logado: Chama a função do backend para criar pagamento dinâmico
-                createDynamicPayment();
+                // Se já logado, vai direto pro pagamento
+                processDirectPurchase(currentUser);
             } else {
-                // Não logado: Abre modal de cadastro
+                // Se não, abre o Wizard de cadastro
+                isRegistering = true;
+                currentStep = 1;
+                updateWizardUI();
                 openModal('modal-auth');
             }
         }
 
-        function createDynamicPayment() {
-            const createPaymentFunction = functions.httpsCallable('criarPagamento');
-            
-            // Feedback visual de carregamento
-            const btn = document.querySelector('.btn-primary'); 
-            if(btn) btn.innerText = "Processando...";
+        // Cria o pedido no banco e redireciona (Sem Cloud Functions)
+        function processDirectPurchase(user) {
+            const btn = document.querySelector('.btn-primary');
+            if(btn) btn.innerText = "Redirecionando para Pagamento...";
 
-            createPaymentFunction({
-                product_name: currentProductName,
+            // 1. Salva a tentativa de compra no banco
+            db.collection('checkout_attempts').add({
+                email: user.email,
+                name: user.displayName || 'Cliente',
+                uid: user.uid,
+                product: currentProductName,
                 price: currentProductAmount,
-                email: currentUser.email,
-                name: currentUser.displayName || "Cliente"
-            }).then(result => {
-                // Redireciona para o URL de pagamento gerado dinamicamente
-                window.location.href = result.data.url;
-            }).catch(error => {
-                console.error("Erro ao criar pagamento dinâmico: ", error);
-                alert("Erro ao processar pagamento. Tente novamente.");
-                if(btn) btn.innerText = "Tentar Novamente";
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'Aguardando Pagamento', 
+                paymentMethod: 'Mercado Pago/Hotmart'
+            }).then(() => {
+                // 2. Redireciona para o Link de Pagamento
+                if (currentProductName.includes("Físico")) {
+                    // window.location.href = LINK_PAGAMENTO_LIVRO; // Descomente quando colocar o link real
+                    alert("Redirecionando para o Pagamento do Livro Físico (Link Demo)");
+                } else {
+                    // window.location.href = LINK_PAGAMENTO_EBOOK;
+                    alert("Redirecionando para o Pagamento do E-book (Link Demo)");
+                }
+            }).catch(err => {
+                alert("Erro ao criar pedido: " + err.message);
             });
         }
 
-        // Lógica do Formulário de Auth
-        document.getElementById('auth-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            
-            if (isRegistering) {
-                const name = document.getElementById('auth-name').value;
-                auth.createUserWithEmailAndPassword(email, password).then(cred => {
-                    // Salva dados extras no Firestore
-                    return db.collection('users').doc(cred.user.uid).set({
-                        name: name,
-                        email: email,
-                        role: 'user' // admin ou user
-                    }).then(() => {
-                        cred.user.updateProfile({ displayName: name });
-                        closeModal('modal-auth');
-                        createDynamicPayment(); // Continua o fluxo de compra dinâmico
-                    });
-                }).catch(error => alert("Erro ao criar conta: " + error.message));
-            } else {
-                // Login
-                auth.signInWithEmailAndPassword(email, password).then(() => {
-                    closeModal('modal-auth');
-                    createDynamicPayment(); // Continua o fluxo de compra dinâmico
-                }).catch(error => alert("Erro ao entrar: " + error.message));
-            }
-        });
+        // --- LÓGICA DO WIZARD DE CADASTRO (3 ETAPAS) ---
 
         function toggleAuthMode() {
             isRegistering = !isRegistering;
-            const title = document.getElementById('auth-title');
-            const btnText = document.getElementById('auth-btn-text');
-            const switchText = document.getElementById('auth-switch-text');
-            const registerFields = document.getElementById('register-fields');
+            currentStep = 1;
+            updateWizardUI();
+        }
 
-            if (isRegistering) {
-                title.innerText = "CRIAR CONTA";
-                btnText.innerText = "CRIAR CONTA E CONTINUAR";
-                switchText.innerText = "Já tem conta? Fazer Login";
-                registerFields.style.display = 'block';
-            } else {
+        function updateWizardUI() {
+            // Esconde todas as etapas e botões primeiro
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('btn-submit').classList.add('hidden');
+            document.getElementById('btn-login-action').classList.add('hidden');
+            
+            document.getElementById('login-fields').classList.add('hidden');
+            document.getElementById('register-step-1').classList.add('hidden');
+
+            const title = document.getElementById('auth-title');
+            const indicator = document.getElementById('wizard-step-indicator');
+            const switchText = document.getElementById('auth-switch-text');
+
+            if (!isRegistering) {
+                // MODO LOGIN
+                document.getElementById('step-1').classList.remove('hidden');
+                document.getElementById('login-fields').classList.remove('hidden');
+                document.getElementById('btn-login-action').classList.remove('hidden');
                 title.innerText = "FAZER LOGIN";
-                btnText.innerText = "ENTRAR E CONTINUAR";
+                indicator.innerText = "ACESSO";
                 switchText.innerText = "Não tem conta? Criar agora";
-                registerFields.style.display = 'none';
+            } else {
+                // MODO CADASTRO (WIZARD)
+                switchText.innerText = "Já tem conta? Fazer Login";
+                title.innerText = "CRIAR CONTA";
+                
+                if (currentStep === 1) {
+                    document.getElementById('step-1').classList.remove('hidden');
+                    document.getElementById('register-step-1').classList.remove('hidden');
+                    document.getElementById('btn-next').classList.remove('hidden');
+                    indicator.innerText = "PASSO 1 DE 3: CONTA";
+                } else if (currentStep === 2) {
+                    document.getElementById('step-2').classList.remove('hidden');
+                    document.getElementById('btn-next').classList.remove('hidden');
+                    indicator.innerText = "PASSO 2 DE 3: CONTATO";
+                } else if (currentStep === 3) {
+                    document.getElementById('step-3').classList.remove('hidden');
+                    document.getElementById('btn-submit').classList.remove('hidden');
+                    indicator.innerText = "PASSO 3 DE 3: ENDEREÇO";
+                }
             }
         }
 
-        // Área do Cliente
+        function nextStep() {
+            // Validação Simples
+            if (currentStep === 1) {
+                const email = document.getElementById('reg-email').value;
+                const pass = document.getElementById('reg-password').value;
+                const name = document.getElementById('reg-name').value;
+                if (!email || !pass || !name) return alert("Preencha todos os campos.");
+                if (pass.length < 6) return alert("A senha deve ter no mínimo 6 caracteres.");
+            }
+            if (currentStep === 2) {
+                const cpf = document.getElementById('reg-cpf').value;
+                const phone = document.getElementById('reg-phone').value;
+                if (!cpf || !phone) return alert("CPF e Telefone são obrigatórios.");
+            }
+
+            currentStep++;
+            updateWizardUI();
+        }
+
+        // Busca CEP Automática (ViaCEP)
+        function buscarEndereco(cep) {
+            cep = cep.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById('reg-street').value = data.logradouro;
+                            document.getElementById('reg-district').value = data.bairro;
+                            document.getElementById('reg-city').value = data.localidade;
+                            document.getElementById('reg-state').value = data.uf;
+                            document.getElementById('reg-number').focus();
+                        }
+                    });
+            }
+        }
+
+        // Finalizar Cadastro + Formspree + Compra
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.innerText = "CADASTRANDO...";
+            btn.disabled = true;
+
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            
+            const userData = {
+                name: document.getElementById('reg-name').value,
+                email: email,
+                cpf: document.getElementById('reg-cpf').value,
+                phone: document.getElementById('reg-phone').value,
+                whatsapp: document.getElementById('reg-whatsapp').value,
+                address: {
+                    cep: document.getElementById('reg-cep').value,
+                    street: document.getElementById('reg-street').value,
+                    number: document.getElementById('reg-number').value,
+                    comp: document.getElementById('reg-comp').value,
+                    district: document.getElementById('reg-district').value,
+                    city: document.getElementById('reg-city').value,
+                    state: document.getElementById('reg-state').value
+                },
+                role: 'user',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // 1. Auth Firebase
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((cred) => {
+                    // 2. Firestore DB
+                    return db.collection('users').doc(cred.user.uid).set(userData)
+                        .then(() => {
+                            cred.user.updateProfile({ displayName: userData.name });
+                            
+                            // 3. Formspree (Envio Silencioso)
+                            fetch(FORMSPREE_ENDPOINT, {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify(userData)
+                            }).catch(err => console.log('Formspree falhou mas seguimos', err));
+
+                            alert("Cadastro realizado com sucesso!");
+                            closeModal('modal-auth');
+                            processDirectPurchase(cred.user);
+                        });
+                })
+                .catch((error) => {
+                    alert("Erro ao cadastrar: " + error.message);
+                    btn.innerText = "FINALIZAR E IR PARA PAGAMENTO";
+                    btn.disabled = false;
+                });
+        }
+
+        function performLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            
+            auth.signInWithEmailAndPassword(email, pass)
+                .then((cred) => {
+                    closeModal('modal-auth');
+                    processDirectPurchase(cred.user);
+                })
+                .catch(err => alert("Erro no login: " + err.message));
+        }
+
+        // --- PERFIL DO USUÁRIO (Painel com Abas) ---
+
         function openAccount() {
+
             if (!currentUser) return;
             openModal('modal-account');
-            const content = document.getElementById('account-content');
-            content.innerHTML = '<p class="text-gray-400 text-center">Carregando...</p>';
+            document.getElementById('user-name-display').innerText = currentUser.displayName || "CLIENTE";
+            switchUserTab('orders');
+        }
 
-            // Busca tentativas de checkout no Firestore (criadas pelo backend)
+        function switchUserTab(tab) {
+            document.getElementById('tab-user-orders').classList.add('hidden');
+            document.getElementById('tab-user-data').classList.add('hidden');
+            
+            // Reseta estilos dos botões
+            const btnOrders = document.getElementById('btn-tab-orders');
+            const btnData = document.getElementById('btn-tab-data');
+            
+            btnOrders.className = "text-left px-4 py-3 rounded text-sm font-bold text-gray-400 hover:text-white hover:bg-[#111625] transition-colors flex items-center gap-2";
+            btnData.className = "text-left px-4 py-3 rounded text-sm font-bold text-gray-400 hover:text-white hover:bg-[#111625] transition-colors flex items-center gap-2";
+
+            if (tab === 'orders') {
+                document.getElementById('tab-user-orders').classList.remove('hidden');
+                btnOrders.className = "text-left px-4 py-3 rounded text-sm font-bold bg-[#111625] text-gold border border-gold/30 hover:bg-[#1a2030] transition-colors flex items-center gap-2";
+                loadUserOrders();
+            } else {
+                document.getElementById('tab-user-data').classList.remove('hidden');
+                btnData.className = "text-left px-4 py-3 rounded text-sm font-bold bg-[#111625] text-gold border border-gold/30 hover:bg-[#1a2030] transition-colors flex items-center gap-2";
+                loadUserProfileData();
+            }
+        }
+
+        function loadUserOrders() {
+            const list = document.getElementById('account-orders-list');
+            list.innerHTML = '<p class="text-gray-500 text-center py-4">Carregando pedidos...</p>';
+
             db.collection('checkout_attempts')
                 .where('email', '==', currentUser.email)
                 .orderBy('date', 'desc')
                 .get()
                 .then(snapshot => {
                     if (snapshot.empty) {
-                        content.innerHTML = '<p class="text-gray-400 text-center">Você ainda não fez nenhum pedido.</p>';
+                        list.innerHTML = '<p class="text-gray-400 text-center">Você ainda não tem pedidos.</p>';
                         return;
                     }
-                    
+
                     let html = '';
                     snapshot.forEach(doc => {
                         const order = doc.data();
-                        const date = order.date ? new Date(order.date.seconds * 1000).toLocaleDateString() : 'Data pendente';
+                        const id = doc.id;
+                        const status = order.status || 'Aguardando Pagamento';
+                        const date = order.date ? new Date(order.date.seconds * 1000).toLocaleDateString() : '---';
                         
+                        let statusClass = 'text-yellow-500';
+                        if(status.includes('Aprovado') || status.includes('Entregue')) statusClass = 'text-green-500';
+                        if(status.includes('Cancelado') || status.includes('Recusado')) statusClass = 'text-red-500';
+
                         html += `
-                            <div class="order-item">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h4 class="text-gold font-bold text-sm">${order.product}</h4>
-                                    <span class="status-badge status-pending">Pedido Iniciado</span>
+                            <div onclick="showOrderDetails('${id}')" class="bg-[#111625] border border-gray-800 p-4 rounded cursor-pointer hover:border-gold/50 transition-all group">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-white font-bold text-sm">${order.product}</p>
+                                        <p class="text-xs text-gray-500">Pedido #${id.substr(0,8)}... • ${date}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs font-bold uppercase ${statusClass} mb-1">${status}</p>
+                                        <p class="text-xs text-gray-400">Ver Detalhes <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></p>
+                                    </div>
                                 </div>
-                                <p class="text-gray-400 text-xs">Valor: R$ ${order.price}</p>
-                                <p class="text-gray-400 text-xs">Data: ${date}</p>
                             </div>
                         `;
                     });
-                    content.innerHTML = html;
+                    list.innerHTML = html;
+                    lucide.createIcons();
                 });
         }
 
+        // Detalhes com Régua de Progresso
+        function showOrderDetails(orderId) {
+            const view = document.getElementById('order-details-view');
+            const content = document.getElementById('order-details-content');
+            view.classList.remove('hidden');
+            content.innerHTML = '<p class="text-center text-gold">Carregando...</p>';
+
+            db.collection('checkout_attempts').doc(orderId).get().then(doc => {
+                if(!doc.exists) return;
+                const order = doc.data();
+                const status = order.status || 'Pedido Realizado';
+                
+                // Mapeamento de Etapas
+                let step = 1;
+                let isError = false;
+                if (['Pedido Realizado', 'Aguardando Pagamento'].includes(status)) step = 1;
+                else if (['Pagamento Aprovado', 'Pedido em Fabricação', 'Fabricação Finalizada'].includes(status)) step = 2;
+                else if (['Pedido na Expedição'].includes(status)) step = 3;
+                else if (['Pedido Coletado', 'Pedido Saiu para Entrega'].includes(status)) step = 4;
+                else if (['Pedido Entregue'].includes(status)) step = 5;
+                else if (['Pagamento Recusado', 'Pedido Cancelado'].includes(status)) isError = true;
+
+                let timelineHTML = '';
+                if(!isError) {
+                    const steps = [
+                        { l: 'Pedido', i: 'shopping-cart' },
+                        { l: 'Produção', i: 'hammer' },
+                        { l: 'Expedição', i: 'package' },
+                        { l: 'Transporte', i: 'truck' },
+                        { l: 'Entregue', i: 'check-circle' }
+                    ];
+                    
+                    timelineHTML = `<div class="flex justify-between items-center relative mb-8 px-2">
+                        <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-800 -z-0"></div>
+                        <div class="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-gold to-yellow-600 -z-0 transition-all duration-1000" style="width: ${((step-1)/(steps.length-1))*100}%"></div>`;
+                    
+                    steps.forEach((s, index) => {
+                        const active = index + 1 <= step;
+                        timelineHTML += `
+                            <div class="flex flex-col items-center gap-2 z-10">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${active ? 'bg-gold border-gold text-black scale-110' : 'bg-[#0B0F19] border-gray-600 text-gray-600'}">
+                                    <i data-lucide="${s.i}" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[9px] uppercase font-bold tracking-wider ${active ? 'text-gold' : 'text-gray-600'}">${s.l}</span>
+                            </div>
+                        `;
+                    });
+                    timelineHTML += `</div>`;
+                } else {
+                    timelineHTML = `<div class="bg-red-900/20 border border-red-500 p-4 rounded text-center mb-6 text-red-500 font-bold">PEDIDO CANCELADO OU RECUSADO</div>`;
+                }
+
+                let trackingHTML = '';
+                if (order.tracking_code) {
+                    trackingHTML = `
+                        <div class="bg-[#111625] border border-gold/30 p-4 rounded mb-6 text-center shadow-[0_0_15px_rgba(203,161,53,0.1)]">
+                            <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Código de Rastreio</p>
+                            <p class="text-xl text-white font-serif font-bold tracking-wider select-all">${order.tracking_code}</p>
+                            <a href="https://www.melhorrastreio.com.br/rastreio/${order.tracking_code}" target="_blank" class="text-[10px] text-gold underline mt-2 block">RASTREAR AGORA</a>
+                        </div>
+                    `;
+                }
+
+                content.innerHTML = `
+                    <div class="text-center mb-6">
+                        <p class="text-gray-400 text-xs uppercase tracking-widest">Status Atual</p>
+                        <h2 class="text-2xl text-gold font-serif font-bold mt-1">${status}</h2>
+                    </div>
+                    ${timelineHTML}
+                    ${trackingHTML}
+                    <div class="bg-[#111625] p-4 rounded border border-gray-800 space-y-2">
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Produto:</span> <span class="text-white">${order.product}</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Valor:</span> <span class="text-gold">R$ ${order.price}</span></div>
+                    </div>
+                `;
+                lucide.createIcons();
+            });
+        }
+
+        function hideOrderDetails() {
+            document.getElementById('order-details-view').classList.add('hidden');
+        }
+
+        function loadUserProfileData() {
+            if (!currentUser) return;
+            db.collection('users').doc(currentUser.uid).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('profile-name').value = data.name || '';
+                    document.getElementById('profile-email').value = data.email || currentUser.email;
+                    document.getElementById('profile-phone').value = data.phone || '';
+                    document.getElementById('profile-cpf').value = data.cpf || '';
+                    document.getElementById('profile-address').value = (data.address && data.address.street) ? 
+                        `${data.address.street}, ${data.address.number} - ${data.address.city}/${data.address.state}` : (data.address || '');
+                }
+            });
+        }
+
+        function saveUserData(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "SALVANDO...";
+            
+            const updateData = {
+                name: document.getElementById('profile-name').value,
+                phone: document.getElementById('profile-phone').value,
+                cpf: document.getElementById('profile-cpf').value,
+                address: document.getElementById('profile-address').value
+            };
+
+            db.collection('users').doc(currentUser.uid).set(updateData, { merge: true })
+                .then(() => {
+                    alert("Dados atualizados!");
+                    btn.innerText = "SALVAR ALTERAÇÕES";
+                });
+        }
+
+        // --- PAINEL ADMINISTRATIVO COMPLETO ---
+
+        let adminCache = { orders: [], clients: [] };
+
+        function openAdminPanel() {
+            openModal('modal-admin');
+            switchAdminTab('orders');
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('admin-view-orders').classList.add('hidden');
+            document.getElementById('admin-view-clients').classList.add('hidden');
+            document.getElementById('adm-tab-orders').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-white';
+            document.getElementById('adm-tab-clients').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-white';
+
+            if(tab === 'orders') {
+                document.getElementById('admin-view-orders').classList.remove('hidden');
+                document.getElementById('adm-tab-orders').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-red-500 text-white bg-red-900/10';
+                loadAdminOrders();
+            } else {
+                document.getElementById('admin-view-clients').classList.remove('hidden');
+                document.getElementById('adm-tab-clients').className = 'flex-1 py-4 text-sm font-bold text-center border-b-2 border-red-500 text-white bg-red-900/10';
+                loadAdminClients();
+            }
+        }
+
+        // --- ADMIN: PEDIDOS ---
+        function loadAdminOrders() {
+            const list = document.getElementById('admin-orders-list');
+            list.innerHTML = '<p class="text-gray-400 text-center">Carregando...</p>';
+
+            db.collection('checkout_attempts').orderBy('date', 'desc').get().then(snap => {
+                adminCache.orders = [];
+                snap.forEach(doc => adminCache.orders.push({id: doc.id, ...doc.data()}));
+                renderAdminOrders(adminCache.orders);
+            });
+        }
+
+        function renderAdminOrders(orders) {
+            const list = document.getElementById('admin-orders-list');
+            if(orders.length === 0) { list.innerHTML = '<p class="text-gray-500 text-center">Nada encontrado.</p>'; return; }
+            
+            let html = '';
+            orders.forEach(o => {
+                const statuses = [
+                    'Pedido Realizado', 'Aguardando Pagamento', 'Pagamento Aprovado', 'Pagamento Recusado',
+                    'Pedido Cancelado', 'Pedido em Fabricação', 'Fabricação Finalizada',
+                    'Pedido na Expedição', 'Pedido Coletado', 'Pedido Saiu para Entrega', 'Pedido Entregue'
+                ];
+                
+                const needsTracking = ['Pedido Coletado', 'Pedido Saiu para Entrega', 'Pedido Entregue'].includes(o.status);
+                const trackingVal = o.tracking_code || '';
+                let optionsHTML = statuses.map(s => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s}</option>`).join('');
+
+                html += `
+                    <div class="bg-[#111625] border border-gray-800 p-4 rounded hover:border-red-500/30 transition-colors">
+                        <div class="flex flex-col md:flex-row justify-between gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] bg-gray-800 px-2 rounded text-gray-300 font-mono">${o.id}</span>
+                                    <span class="text-gold font-bold text-xs">${o.product}</span>
+                                </div>
+                                <p class="text-white font-bold">${o.name || 'Sem nome'}</p>
+                                <p class="text-gray-400 text-xs">${o.email}</p>
+                            </div>
+                            <div class="flex flex-col gap-2 min-w-[200px]">
+                                <label class="text-[9px] text-gray-500 uppercase font-bold">Status</label>
+                                <select onchange="updateAdminOrderStatus('${o.id}', this.value)" class="bg-black border border-gray-700 text-white text-xs p-2 rounded focus:border-red-500 outline-none">
+                                    ${optionsHTML}
+                                </select>
+                                <div id="tracking-box-${o.id}" class="${needsTracking ? '' : 'hidden'}">
+                                     <input type="text" placeholder="Cód. Rastreio (Enter para salvar)" value="${trackingVal}" 
+                                        onblur="saveTrackingCode('${o.id}', this.value)"
+                                        class="w-full bg-[#0B0F19] border border-gold/30 text-gold text-xs p-2 rounded placeholder-gray-600 focus:border-gold outline-none">
+                                </div>
+                                <div class="flex justify-end gap-2 mt-2">
+                                    <button onclick="editOrderData('${o.id}')" class="p-2 bg-blue-900/20 text-blue-400 rounded hover:bg-blue-900/40"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                                    <button onclick="deleteOrder('${o.id}')" class="p-2 bg-red-900/20 text-red-500 rounded hover:bg-red-900/40"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function updateAdminOrderStatus(id, status) {
+            const trackingBox = document.getElementById(`tracking-box-${id}`);
+            if(['Pedido Coletado', 'Pedido Saiu para Entrega', 'Pedido Entregue'].includes(status)) {
+                trackingBox.classList.remove('hidden');
+            } else {
+                trackingBox.classList.add('hidden');
+            }
+            db.collection('checkout_attempts').doc(id).update({ status: status });
+        }
+
+        function saveTrackingCode(id, code) {
+            if(code) db.collection('checkout_attempts').doc(id).update({ tracking_code: code });
+        }
+
+        function editOrderData(id) {
+            const o = adminCache.orders.find(x => x.id === id);
+            const newName = prompt("Nome:", o.name);
+            const newEmail = prompt("Email:", o.email);
+            if(newName && newEmail) {
+                db.collection('checkout_attempts').doc(id).update({ name: newName, email: newEmail })
+                    .then(() => { loadAdminOrders(); alert("Pedido atualizado."); });
+            }
+        }
+
+        function deleteOrder(id) {
+            if(confirm("Deletar pedido?")) {
+                db.collection('checkout_attempts').doc(id).delete().then(() => loadAdminOrders());
+            }
+        }
+
+        // --- ADMIN: CLIENTES (ADICIONAR/EDITAR/DELETAR) ---
+        
+        function loadAdminClients() {
+            const list = document.getElementById('admin-clients-list');
+            list.innerHTML = '<p class="text-center text-gray-500">Carregando clientes...</p>';
+            db.collection('users').get().then(snap => {
+                adminCache.clients = [];
+                snap.forEach(doc => adminCache.clients.push({id: doc.id, ...doc.data()}));
+                renderAdminClients(adminCache.clients);
+            });
+        }
+
+        function renderAdminClients(clients) {
+            const list = document.getElementById('admin-clients-list');
+            if(clients.length === 0) { list.innerHTML = '<p>Nenhum cliente.</p>'; return; }
+
+            let html = '';
+            clients.forEach(c => {
+                html += `
+                    <div class="bg-[#111625] p-4 rounded border border-gray-800 flex justify-between items-center">
+                        <div>
+                            <p class="text-white font-bold text-sm uppercase">${c.name || 'Sem Nome'}</p>
+                            <p class="text-gray-400 text-xs">${c.email}</p>
+                            <p class="text-[10px] text-gray-600 mt-1">Role: ${c.role || 'user'} • Tel: ${c.phone || '-'}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editClientDataFromAdmin('${c.id}')" class="text-blue-400 hover:text-blue-300 p-2" title="Editar"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deleteUserRecord('${c.id}')" class="text-red-500 hover:text-red-300 p-2" title="Deletar"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // ADICIONAR CLIENTE (MANUALMENTE NO BANCO)
+        function openAddClientModal() {
+            const name = prompt("Nome do Cliente:");
+            const email = prompt("E-mail do Cliente:");
+            const phone = prompt("Telefone:");
+            
+            if (name && email) {
+                db.collection('users').add({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    role: 'user',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    manualEntry: true
+                }).then(() => {
+                    alert("Cliente adicionado com sucesso!");
+                    loadAdminClients();
+                }).catch(err => alert("Erro: " + err.message));
+            }
+        }
+
+        // EDITAR CLIENTE
+        function editClientDataFromAdmin(id) {
+            const client = adminCache.clients.find(c => c.id === id);
+            const newName = prompt("Nome:", client.name);
+            const newPhone = prompt("Telefone:", client.phone);
+            const newRole = prompt("Role (user/admin):", client.role);
+
+            if (newName !== null) {
+                db.collection('users').doc(id).update({
+                    name: newName, phone: newPhone, role: newRole
+                }).then(() => {
+                    alert("Cliente atualizado!");
+                    loadAdminClients();
+                });
+            }
+        }
+
+        function deleteUserRecord(id) {
+            if(confirm("Isso deleta o cadastro do cliente. Continuar?")) {
+                db.collection('users').doc(id).delete().then(() => loadAdminClients());
+            }
+        }
+
+        // Filtros
+        function filterAdminList(type) {
+            const term = document.getElementById(type === 'order' ? 'admin-search-order' : 'admin-search-client').value.toLowerCase();
+            if(type === 'order') {
+                const filtered = adminCache.orders.filter(o => (o.email && o.email.toLowerCase().includes(term)) || (o.name && o.name.toLowerCase().includes(term)) || (o.id.includes(term)));
+                renderAdminOrders(filtered);
+            } else {
+                const filtered = adminCache.clients.filter(c => (c.email && c.email.toLowerCase().includes(term)) || (c.name && c.name.toLowerCase().includes(term)));
+                renderAdminClients(filtered);
+            }
+        }
+
+        // OUTROS
         function logout() {
             auth.signOut().then(() => {
                 closeModal('modal-account');
                 alert("Você saiu da conta.");
+                window.location.reload();
             });
         }
 
-        // Inicialização do AOS
-        AOS.init({
-            once: true, 
-            duration: 800, 
-            offset: 50,
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('open'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('open');
+            setTimeout(() => modal.style.display = 'none', 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('chapter-modal') || event.target.classList.contains('auth-modal') || event.target.classList.contains('account-modal')) {
+                closeModal(event.target.id);
+            }
+        }
+
+        // Inicialização
+        AOS.init({ once: true, duration: 800, offset: 50 });
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if(document.getElementById('reg-phone')) IMask(document.getElementById('reg-phone'), { mask: '(00) 00000-0000' });
+            if(document.getElementById('reg-whatsapp')) IMask(document.getElementById('reg-whatsapp'), { mask: '(00) 00000-0000' });
+            if(document.getElementById('reg-cpf')) IMask(document.getElementById('reg-cpf'), { mask: '000.000.000-00' });
+            if(document.getElementById('reg-cep')) IMask(document.getElementById('reg-cep'), { mask: '00000-000' });
+            if(document.getElementById('profile-phone')) IMask(document.getElementById('profile-phone'), { mask: '(00) 00000-0000' });
+            if(document.getElementById('profile-cpf')) IMask(document.getElementById('profile-cpf'), { mask: '000.000.000-00' });
         });
 
-        lucide.createIcons();
-        
-        // Lógica da Música
+        // Player
         const bgMusic = document.getElementById('bg-music');
         const floatingPlayer = document.getElementById('floating-player');
         const musicStatus = document.getElementById('music-status');
         const playIcon = document.getElementById('play-icon');
-        const musicIcon = document.getElementById('music-icon');
         let isPlaying = false;
-
         bgMusic.volume = 0.5;
 
         function toggleMusic() {
@@ -1228,77 +1791,47 @@ auth.onAuthStateChanged(user => {
                     playIcon.setAttribute('data-lucide', 'pause');
                     floatingPlayer.classList.add('music-playing');
                     isPlaying = true;
-                }).catch(error => {
-                    console.log("Autoplay bloqueado.");
-                });
+                }).catch(() => console.log("Autoplay bloqueado."));
             }
             lucide.createIcons();
         }
+        document.body.addEventListener('click', function() { if (!isPlaying) toggleMusic(); }, { once: true });
 
-        document.body.addEventListener('click', function() {
-            if (!isPlaying) {
-                toggleMusic();
-            }
-        }, { once: true }); 
-
-        // Lógica de Preços (Abas)
+        // Preços
         function switchPrice(type) {
-            currentProduct = type;
+            currentProductName = type === 'printed' ? "Livro Físico" : "E-book";
+            currentProductAmount = type === 'printed' ? 64.69 : 19.99;
             document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + type).classList.add('active');
-
-            const priceTitle = document.getElementById('price-title');
-            const priceOld = document.getElementById('price-old');
-            const priceCurrent = document.getElementById('price-current');
-            const priceFeatures = document.getElementById('price-features');
-            const priceBtn = document.getElementById('price-btn');
             
-            // Atualiza botão de compra com a nova função
-            priceBtn.setAttribute('onclick', `checkLoginAndBuy('${type}')`);
-
+            const title = document.getElementById('price-title');
+            const old = document.getElementById('price-old');
+            const current = document.getElementById('price-current');
+            const btn = document.getElementById('price-btn');
+            
             if (type === 'printed') {
-                priceTitle.innerText = "LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK";
-                priceOld.innerText = "109,83";
-                priceCurrent.innerText = "64,69";
-                priceBtn.innerText = "QUERO MEU LIVRO FÍSICO!";
-                
-                priceFeatures.innerHTML = `
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Livro Impresso (Capa Flexível)</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Audio Book Narrado (Bônus)</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Entrega via Correios</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="gift" class="w-5 h-5 text-gold"></i> Marcador de Páginas Exclusivo</p>
-                `;
+                title.innerText = "LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK";
+                old.innerText = "109,83";
+                current.innerText = "64,69";
+                btn.innerText = "QUERO MEU LIVRO FÍSICO!";
             } else {
-                priceTitle.innerText = "E-BOOK COMPLETO + AUDIO BOOK";
-                priceOld.innerText = "39,99";
-                priceCurrent.innerText = "19,99";
-                priceBtn.innerText = "QUERO MEU E-BOOK!";
-                
-                priceFeatures.innerHTML = `
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="100"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Livro Digital (PDF/EPUB)</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="200"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Audio Book Narrado</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="300"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Entrega Imediata por E-mail</p>
-                    <p class="flex items-center gap-3 text-sm text-gray-300" data-aos="fade-right" data-aos-delay="400"><i data-lucide="check-circle" class="w-5 h-5 text-gold"></i> Sem Custo de Frete</p>
-                `;
+                title.innerText = "E-BOOK COMPLETO + AUDIO BOOK";
+                old.innerText = "39,99";
+                current.innerText = "19,99";
+                btn.innerText = "QUERO MEU E-BOOK!";
             }
-            lucide.createIcons();
+            btn.setAttribute('onclick', `checkLoginAndBuy('${type}')`);
         }
-        
         switchPrice('printed');
 
         function switchTab(store, url, btnText) {
             document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + store).classList.add('active');
-            
             const container = document.getElementById('market-btn-container');
             container.classList.remove('hidden');
             container.classList.add('fade-in');
-
-            const btnTextEl = document.getElementById('market-text');
-            const btnLink = document.getElementById('market-link');
-            
-            btnTextEl.innerText = btnText;
-            btnLink.href = url;
+            document.getElementById('market-text').innerText = btnText;
+            document.getElementById('market-link').href = url;
         }
 
         function openModal(modalId) {
