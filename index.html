@@ -43,9 +43,6 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    fontSize: {
-                        'xxs': '.65rem', // Aumentado um pouco o menor tamanho
                     }
                 }
             }
@@ -62,20 +59,17 @@
             background-color: #04060C; 
             color: #e2e8f0; 
             font-family: 'Lato', sans-serif;
-            /* Tamanho base mínimo para leitura confortável */
             font-size: 16px; 
         }
 
         /* Ajuste de fontes menores para mobile */
         p, span, a, div {
-            /* Garante que textos não fiquem microscópicos */
             font-size: max(14px, 1em); 
         }
         
-        /* Exceções para textos de apoio muito pequenos (como legendas) */
         .text-xs { font-size: 12px !important; }
-        .text-\[10px\] { font-size: 11px !important; } /* Aumentado levemente */
-        .text-\[9px\] { font-size: 10px !important; }  /* Aumentado levemente */
+        .text-\[10px\] { font-size: 11px !important; }
+        .text-\[9px\] { font-size: 10px !important; }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -108,15 +102,23 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
-            font-size: 16px; /* Fonte maior para botões */
+            font-size: 16px;
             cursor: pointer;
-            white-space: normal; /* Permite quebra se necessário, mas evita corte */
+            white-space: normal;
             text-align: center;
+            border: none;
         }
         .btn-primary:hover { 
             background-color: #b38b2a; 
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(203, 161, 53, 0.3);
+        }
+        .btn-primary:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .btn-outline {
@@ -168,11 +170,11 @@
         /* Abas de Preço */
         .price-tab {
             cursor: pointer;
-            padding: 12px; /* Aumentado padding para toque */
+            padding: 12px;
             border: 1px solid rgba(255,255,255,0.1);
             background: #0B0F19;
             color: #888;
-            font-size: 14px; /* Fonte maior */
+            font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.3s;
@@ -288,7 +290,7 @@
             padding: 30px;
             overflow-y: auto;
             font-family: 'Lato', sans-serif;
-            font-size: 18px; /* Aumentado para leitura confortável */
+            font-size: 18px; 
             line-height: 1.8;
             color: #d1d5db;
             text-align: justify;
@@ -324,13 +326,13 @@
             width: 100%;
             background: #111625;
             border: 1px solid #333;
-            padding: 14px; /* Aumentado para facilitar o toque */
+            padding: 14px;
             color: white;
             border-radius: 4px;
             margin-bottom: 15px;
             outline: none;
             transition: border-color 0.3s;
-            font-size: 16px; /* Evita zoom automático no iOS */
+            font-size: 16px;
         }
         .checkout-input:focus { border-color: #CBA135; }
         .checkout-summary {
@@ -355,7 +357,7 @@
 </head>
 <body>
 
-    <!-- ÁUDIO DE FUNDO (Link Definitivo) -->
+    <!-- ÁUDIO DE FUNDO (Link Definitivo GitHub) -->
     <audio id="bg-music" loop>
         <source src="https://github.com/euexistoporvoce/leitura/blob/main/The_Lord_of_the_Rings.mp3?raw=true" type="audio/mpeg">
         Seu navegador não suporta áudio.
@@ -366,7 +368,7 @@
         <div class="mobile-container !min-h-0 !py-0 flex justify-between items-center max-w-full">
             <div class="flex items-center gap-2 flex-1 min-w-0 mr-2" data-aos="fade-right">
                 <i data-lucide="book" class="w-5 h-5 text-gold flex-shrink-0"></i>
-                <!-- Texto ajustado para não quebrar -->
+                <!-- Texto ajustável com truncate para não estourar o layout -->
                 <div class="flex flex-col">
                     <span class="font-serif text-white font-bold text-[11px] sm:text-xs tracking-widest uppercase truncate">
                         Eu Existo
@@ -376,7 +378,7 @@
                     </span>
                 </div>
             </div>
-            <!-- Botão fixo sem quebra de linha e tamanho ajustado -->
+            <!-- Botão fixo sem quebra de linha -->
             <div onclick="openCheckout('printed')" class="bg-gold text-black font-bold text-[11px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 whitespace-nowrap shadow-md" data-aos="fade-left">
                 Comprar Agora
             </div>
@@ -389,7 +391,7 @@
         <!-- HERO -->
         <div class="text-center mb-12">
             <p class="text-gold text-xs uppercase tracking-[0.3em] font-bold mb-4" data-aos="fade-down">UMA JORNADA REAL</p>
-            <!-- Ajuste de tamanho de fonte para evitar zoom/overflow -->
+            <!-- Ajuste de tamanho de fonte e quebra de palavra para mobile -->
             <h1 class="title-hero text-2xl sm:text-3xl mb-4 leading-snug" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
             <h2 class="title-gold text-xl sm:text-2xl mb-8 leading-snug" data-aos="fade-up" data-aos-delay="200">E DEPOIS TE DAR FORÇAS PARA CONTINUAR.</h2>
 
@@ -421,7 +423,6 @@
                     <div onclick="switchTab('uiclap', 'https://loja.uiclap.com/titulo/ua104467/', 'COMPRAR NA UICLAP')" class="market-tab" id="tab-uiclap"><span class="text-white font-bold font-serif text-xl">UICLAP</span></div>
                     <div onclick="switchTab('ml', 'https://produto.mercadolivre.com.br/MLB-5326863840-livro-eu-existo-por-voc-_JM', 'COMPRAR NO MERCADO LIVRE')" class="market-tab" id="tab-ml"><img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.18.9/mercadolibre/logo__large_plus.png" class="h-6 filter invert brightness-0 sepia saturate-0 contrast-200"></div>
                 </div>
-                <!-- Linha 2 de Marketplaces -->
                 <div class="flex flex-wrap justify-center gap-4 mb-6">
                     <div onclick="switchTab('clube', 'https://clubedeautores.com.br/livro/eu-existo-por-voce', 'COMPRAR NO CLUBE')" class="market-tab" id="tab-clube"><div class="bg-purple-700 px-3 py-1.5 rounded text-white font-bold text-xs flex items-center gap-1"><i data-lucide="book-open" class="w-4 h-4"></i> CLUBE</div></div>
                     <div onclick="switchTab('google', 'https://play.google.com/store/books/details/%C3%81damo_F_Costa_Eu_Existo_Por_Voc%C3%AA?id=fz90EQAAQBAJ&pli=1', 'COMPRAR NO GOOGLE PLAY')" class="market-tab" id="tab-google"><div class="bg-gradient-to-r from-blue-500 to-green-500 px-3 py-1.5 rounded text-white font-bold text-xs flex items-center gap-1"><i data-lucide="play" class="w-4 h-4 fill-current"></i> PLAY</div></div>
@@ -549,7 +550,6 @@
             </div>
             
             <div class="grid grid-cols-2 gap-4">
-                <!-- CAMILA -->
                 <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-left" data-aos-delay="0">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/camila.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
@@ -557,7 +557,6 @@
                         <p class="text-[10px] text-gold uppercase">AMOR ETERNO</p>
                     </div>
                 </div>
-                <!-- GABI -->
                 <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-right" data-aos-delay="100">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/gabriela.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
@@ -565,7 +564,6 @@
                         <p class="text-[10px] text-gold uppercase">A GUERREIRA</p>
                     </div>
                 </div>
-                <!-- SPYKE -->
                 <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-left" data-aos-delay="200">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/Spyke.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
@@ -573,7 +571,6 @@
                         <p class="text-[10px] text-gold uppercase">O GUARDIÃO</p>
                     </div>
                 </div>
-                <!-- O PAI -->
                 <div class="bg-black aspect-square relative group overflow-hidden rounded-sm shadow-lg" data-aos="flip-right" data-aos-delay="300">
                     <img src="https://raw.githubusercontent.com/euexistoporvoce/leitura/refs/heads/main/adamo.jpg" class="w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black via-black/80 to-transparent text-center">
@@ -769,7 +766,79 @@
         <i id="play-icon" data-lucide="play" class="w-4 h-4 text-white ml-2 fill-current"></i>
     </div>
 
-  <!-- MODAIS DE LEITURA -->
+    <!-- MODAL DE CHECKOUT (Integrado com Formspree e Pagamento) -->
+    <div id="modal-checkout" class="checkout-modal">
+        <div class="checkout-container">
+            <div class="checkout-timer">
+                OFERTA EXPIRA EM: <span id="checkout-timer-display">10:00</span>
+            </div>
+            
+            <div class="modal-header">
+                <div>
+                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">FINALIZAR PEDIDO</p>
+                    <h3 class="text-white font-serif text-xl">DADOS DE COMPRA</h3>
+                </div>
+                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-checkout')"></i>
+            </div>
+
+            <div class="checkout-grid">
+                <!-- Coluna Esquerda: Formulário Formspree -->
+                <div class="p-2">
+                    <p class="text-white text-sm mb-4 font-bold">SEUS DADOS (Seguro e Criptografado)</p>
+                    <!-- Formulário integrado com Formspree e script de redirecionamento -->
+                    <form id="checkout-form" action="https://formspree.io/f/xqajpybz" method="POST" target="_blank">
+                        <input type="hidden" name="Produto" id="form-product-type">
+                        <input type="text" name="Nome" id="checkout-name" placeholder="Nome Completo" class="checkout-input" required>
+                        <input type="email" name="Email" id="checkout-email" placeholder="Seu Melhor E-mail" class="checkout-input" required>
+                        <input type="text" name="CPF" id="checkout-cpf" placeholder="CPF / CNPJ" class="checkout-input" required>
+                        <input type="tel" name="Celular" id="checkout-phone" placeholder="Celular (com DDD)" class="checkout-input" required>
+                        <input type="tel" name="Whatsapp" id="checkout-whatsapp" placeholder="WhatsApp (com DDD)" class="checkout-input" required>
+                        
+                        <!-- Botão de Envio e Redirecionamento -->
+                        <button type="submit" class="btn-primary w-full mt-6 text-base cursor-pointer py-4 font-bold shadow-md hover:shadow-gold/20 border-none">
+                            <i data-lucide="lock" class="w-5 h-5 mr-2"></i> IR PARA PAGAMENTO SEGURO
+                        </button>
+                    </form>
+                    
+                    <div class="flex justify-center gap-4 mt-6 opacity-50 grayscale">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logomarca_Mercado_Pago.png" class="h-6 filter invert brightness-0">
+                        <img src="https://logodownload.org/wp-content/uploads/2019/06/pagseguro-logo-1.png" class="h-6 filter invert brightness-0">
+                    </div>
+                </div>
+
+                <!-- Coluna Direita: Resumo -->
+                <div class="checkout-summary mt-4 md:mt-0">
+                    <p class="text-gold text-xs font-bold uppercase tracking-widest mb-4">RESUMO DO PEDIDO</p>
+                    <div class="flex gap-4 mb-4">
+                        <img src="https://i.postimg.cc/Qt3jvfJK/Screenshot-20250609-161632-2-(1).png" class="w-20 h-28 object-cover rounded border border-gold/30 shadow-md">
+                        <div>
+                            <p id="checkout-product-title" class="text-white text-sm font-bold leading-tight mb-2">Livro Eu Existo Por Você</p>
+                            <p class="text-gray-400 text-xs mb-1">Autor: Ádamo F. Costa</p>
+                            <p class="text-green-500 text-xs font-bold">Em Estoque</p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-white/10 my-4 pt-4">
+                        <div class="flex justify-between text-sm text-gray-300 mb-2">
+                            <span>Preço:</span>
+                            <span class="line-through" id="checkout-old-price">R$ 109,83</span>
+                        </div>
+                        <div class="flex justify-between text-2xl text-gold font-bold">
+                            <span>Total:</span>
+                            <span id="checkout-price">R$ 64,69</span>
+                        </div>
+                    </div>
+
+                    <div class="secure-badge bg-[#111625] py-3 rounded border border-white/5">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-green-500"></i> 
+                        <span class="text-gray-300 text-xs">Compra 100% Segura</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAIS DE LEITURA -->
     
     <!-- Modal Introdução -->
     <div id="modal-intro" class="chapter-modal">
@@ -889,76 +958,6 @@
             </div>
         </div>
     </div>
-    <!-- MODAL DE CHECKOUT -->
-    <div id="modal-checkout" class="checkout-modal">
-        <div class="checkout-container">
-            <!-- Topo com Timer -->
-            <div class="checkout-timer">
-                OFERTA EXPIRA EM: <span id="checkout-timer-display">10:00</span>
-            </div>
-            
-            <div class="modal-header">
-                <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">FINALIZAR PEDIDO</p>
-                    <h3 class="text-white font-serif text-xl">DADOS DE COMPRA</h3>
-                </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-checkout')"></i>
-            </div>
-
-            <div class="checkout-grid">
-                <!-- Coluna Esquerda: Formulário -->
-                <div class="p-2">
-                    <p class="text-white text-sm mb-4 font-bold">SEUS DADOS (Seguro e Criptografado)</p>
-                    <input type="text" id="checkout-name" placeholder="Nome Completo" class="checkout-input">
-                    <input type="email" id="checkout-email" placeholder="Seu Melhor E-mail" class="checkout-input">
-                    <input type="text" id="checkout-cpf" placeholder="CPF / CNPJ" class="checkout-input">
-                    <input type="tel" id="checkout-phone" placeholder="Celular (com DDD)" class="checkout-input">
-                    <input type="tel" id="checkout-whatsapp" placeholder="WhatsApp (com DDD)" class="checkout-input">
-                    
-                    <!-- Botão de Ação Final (Redirecionamento JavaScript) -->
-                    <div onclick="processPayment()" class="btn-primary w-full mt-6 text-base cursor-pointer py-4 font-bold shadow-md hover:shadow-gold/20">
-                        <i data-lucide="lock" class="w-5 h-5 mr-2"></i> IR PARA PAGAMENTO SEGURO
-                    </div>
-                    
-                    <div class="flex justify-center gap-4 mt-6 opacity-50 grayscale">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logomarca_Mercado_Pago.png" class="h-6 filter invert brightness-0">
-                        <img src="https://logodownload.org/wp-content/uploads/2019/06/pagseguro-logo-1.png" class="h-6 filter invert brightness-0">
-                    </div>
-                </div>
-
-                <!-- Coluna Direita: Resumo -->
-                <div class="checkout-summary mt-4 md:mt-0">
-                    <p class="text-gold text-xs font-bold uppercase tracking-widest mb-4">RESUMO DO PEDIDO</p>
-                    <div class="flex gap-4 mb-4">
-                        <!-- Capa do Livro Atualizada para a nova imagem -->
-                        <img src="https://i.postimg.cc/Qt3jvfJK/Screenshot-20250609-161632-2-(1).png" class="w-20 h-28 object-cover rounded border border-gold/30 shadow-md">
-                        <div>
-                            <p id="checkout-product-title" class="text-white text-sm font-bold leading-tight mb-2">Livro Eu Existo Por Você</p>
-                            <p class="text-gray-400 text-xs mb-1">Autor: Ádamo F. Costa</p>
-                            <p class="text-green-500 text-xs font-bold">Em Estoque</p>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-white/10 my-4 pt-4">
-                        <div class="flex justify-between text-sm text-gray-300 mb-2">
-                            <span>Preço:</span>
-                            <span class="line-through" id="checkout-old-price">R$ 109,83</span>
-                        </div>
-                        <div class="flex justify-between text-2xl text-gold font-bold">
-                            <span>Total:</span>
-                            <span id="checkout-price">R$ 64,69</span>
-                        </div>
-                    </div>
-
-                    <div class="secure-badge bg-[#111625] py-3 rounded border border-white/5">
-                        <i data-lucide="shield-check" class="w-5 h-5 text-green-500"></i> 
-                        <span class="text-gray-300 text-xs">Compra 100% Segura</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Biblioteca AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
@@ -972,7 +971,7 @@
 
         lucide.createIcons();
         
-        // Lógica da Música (Link Github Correto)
+        // Lógica da Música (Link Github Definitivo)
         const bgMusic = document.getElementById('bg-music');
         const floatingPlayer = document.getElementById('floating-player');
         const musicStatus = document.getElementById('music-status');
@@ -1030,6 +1029,7 @@
             const priceFeatures = document.getElementById('price-features');
             const priceBtn = document.getElementById('price-btn');
 
+            // Atualiza o evento onclick do botão para abrir o checkout certo
             priceBtn.setAttribute('onclick', `openCheckout('${type}')`);
 
             if (type === 'printed') {
@@ -1107,6 +1107,9 @@
             const productTitle = document.getElementById('checkout-product-title');
             const productPrice = document.getElementById('checkout-price');
             const productOldPrice = document.getElementById('checkout-old-price');
+            
+            // Atualiza campo oculto do formulário
+            document.getElementById('form-product-type').value = (type === 'printed' ? 'Livro Impresso' : 'E-book Digital');
 
             if (type === 'printed') {
                 productTitle.innerText = "Livro Impresso (Capa Flexível) + Audio Book";
@@ -1126,25 +1129,18 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // Processar Pagamento
-        function processPayment() {
-            const name = document.getElementById('checkout-name').value;
-            const email = document.getElementById('checkout-email').value;
-            const cpf = document.getElementById('checkout-cpf').value;
-            const phone = document.getElementById('checkout-phone').value;
-            const whatsapp = document.getElementById('checkout-whatsapp').value;
-
-            if (!name || !email || !cpf || !phone || !whatsapp) {
-                alert("Por favor, preencha todos os campos para continuar.");
-                return;
-            }
+        // Interceptar envio do formulário e redirecionar para o pagamento
+        const form = document.getElementById('checkout-form');
+        form.addEventListener('submit', function(e) {
+            // O formulário envia para o Formspree (abre nova aba ou carrega)
+            // Vamos garantir que o usuário vá para o pagamento logo em seguida
             
-            // Link de pagamento correto
-            const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
-            
-            // Abre o link de pagamento em uma nova aba
-            window.open(finalLink, '_blank');
-        }
+            setTimeout(() => {
+                const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
+                // Redireciona a página atual para o pagamento, enquanto o Formspree processa no target _blank
+                window.location.href = finalLink; 
+            }, 1000); 
+        });
 
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
