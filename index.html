@@ -22,6 +22,12 @@
     <!-- Máscara para inputs (Telefone/CPF) -->
     <script src="https://cdn.jsdelivr.net/npm/imask"></script>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -219,8 +225,8 @@
             100% { height: 20%; }
         }
 
-        /* --- ESTILOS DO MODAL DE LEITURA E CHECKOUT --- */
-        .chapter-modal, .checkout-modal {
+        /* --- ESTILOS DOS MODAIS --- */
+        .chapter-modal, .checkout-modal, .auth-modal, .account-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -236,7 +242,7 @@
             transition: opacity 0.3s ease;
             backdrop-filter: blur(5px);
         }
-        .chapter-modal.open, .checkout-modal.open {
+        .chapter-modal.open, .checkout-modal.open, .auth-modal.open, .account-modal.open {
             opacity: 1;
             pointer-events: auto;
         }
@@ -257,12 +263,11 @@
             transition: transform 0.3s ease;
         }
         
-        /* Container do Checkout */
-        .checkout-container {
+        /* Container Ajustável */
+        .checkout-container, .auth-container, .account-container {
             background-color: #0B0F19;
             width: 95%;
-            max-width: 800px; 
-            max-height: 90vh;
+            max-width: 500px;
             border: 1px solid #CBA135;
             border-radius: 4px;
             position: relative;
@@ -272,9 +277,11 @@
             transform: translateY(20px);
             transition: transform 0.3s ease;
             overflow-y: auto;
+            max-height: 90vh;
         }
+        .account-container { max-width: 800px; }
 
-        .chapter-modal.open .modal-container, .checkout-modal.open .checkout-container {
+        .open .modal-container, .open .checkout-container, .open .auth-container, .open .account-container {
             transform: translateY(0);
         }
 
@@ -303,25 +310,7 @@
         }
         .close-btn:hover { transform: scale(1.1); color: white; }
 
-        /* Estilos Específicos do Checkout */
-        .checkout-timer {
-            background: #CBA135;
-            color: black;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-            font-size: 16px;
-            font-family: 'Lato', sans-serif;
-        }
-        .checkout-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            padding: 20px;
-        }
-        @media (min-width: 768px) {
-            .checkout-grid { grid-template-columns: 1.5fr 1fr; }
-        }
+        /* Inputs */
         .checkout-input {
             width: 100%;
             background: #111625;
@@ -335,23 +324,26 @@
             font-size: 16px;
         }
         .checkout-input:focus { border-color: #CBA135; }
-        .checkout-summary {
-            background: #04060C;
+
+        /* Area do Cliente */
+        .order-item {
+            background: #111625;
             border: 1px solid #333;
-            padding: 20px;
+            padding: 15px;
             border-radius: 4px;
+            margin-bottom: 10px;
         }
-        .secure-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            font-size: 12px;
-            color: #22c55e;
-            margin-top: 10px;
-            text-transform: uppercase;
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: bold;
+            text-transform: uppercase;
         }
+        .status-pending { background: #ca8a04; color: black; }
+        .status-paid { background: #16a34a; color: white; }
+        .status-shipped { background: #2563eb; color: white; }
 
     </style>
 </head>
@@ -378,9 +370,17 @@
                     </span>
                 </div>
             </div>
-            <!-- Botão fixo sem quebra de linha -->
-            <div onclick="openCheckout('printed')" class="bg-gold text-black font-bold text-[11px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 whitespace-nowrap shadow-md" data-aos="fade-left">
-                Comprar Agora
+            
+            <div class="flex items-center gap-3">
+                <!-- Botão Minha Conta (Só aparece se logado) -->
+                <div id="btn-account" onclick="openAccount()" class="hidden text-gold hover:text-white cursor-pointer text-xs font-bold flex flex-col items-center">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span class="text-[9px] mt-1">PERFIL</span>
+                </div>
+
+                <div onclick="checkLoginAndBuy('printed')" class="bg-gold text-black font-bold text-[11px] px-4 py-2 rounded-sm uppercase tracking-wider hover:bg-white transition cursor-pointer flex-shrink-0 whitespace-nowrap shadow-md" data-aos="fade-left">
+                    Comprar Agora
+                </div>
             </div>
         </div>
     </div>
@@ -391,7 +391,6 @@
         <!-- HERO -->
         <div class="text-center mb-12">
             <p class="text-gold text-xs uppercase tracking-[0.3em] font-bold mb-4" data-aos="fade-down">UMA JORNADA REAL</p>
-            <!-- Ajuste de tamanho de fonte e quebra de palavra para mobile -->
             <h1 class="title-hero text-2xl sm:text-3xl mb-4 leading-snug" data-aos="fade-up" data-aos-delay="100">A HISTÓRIA QUE VAI TE FAZER CHORAR...</h1>
             <h2 class="title-gold text-xl sm:text-2xl mb-8 leading-snug" data-aos="fade-up" data-aos-delay="200">E DEPOIS TE DAR FORÇAS PARA CONTINUAR.</h2>
 
@@ -404,7 +403,7 @@
 
             <div class="space-y-4 mb-8">
                 <div data-aos="zoom-in" data-aos-delay="400">
-                    <div onclick="openCheckout('printed')" class="btn-primary gap-2 cursor-pointer text-base py-4">
+                    <div onclick="checkLoginAndBuy('printed')" class="btn-primary gap-2 cursor-pointer text-base py-4">
                         QUERO MEU LIVRO <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </div>
                 </div>
@@ -444,12 +443,10 @@
                 <h3 class="title-hero text-2xl">O QUE DIZEM SOBRE A OBRA</h3>
             </div>
             
-            <!-- Trailer Oficial -->
             <div class="aspect-video w-full mb-8 border border-white/10 rounded shadow-2xl bg-black overflow-hidden" data-aos="zoom-in">
                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/1QqXw-SAkjM" title="Trailer do Livro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
 
-             <!-- Depoimentos -->
              <div class="max-w-xs mx-auto" data-aos="fade-up" data-aos-delay="100">
                 <p class="text-center text-gray-400 text-xs uppercase tracking-widest mb-4">Depoimentos</p>
                 <div class="aspect-[9/16] border border-white/10 rounded shadow-xl overflow-hidden bg-black">
@@ -500,45 +497,12 @@
                     </div>
                     <p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p>
                 </div>
-
                 <!-- Cap 2 -->
-                <div onclick="openModal('modal-cap2')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="100">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 2</p>
-                            <h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">A DESCIDA SEM FREIO</h4>
-                            <p class="text-sm text-gray-400 leading-relaxed">A jornada no trem e as loucuras que fazemos quando crianças.</p>
-                        </div>
-                        <i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i>
-                    </div>
-                    <p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p>
-                </div>
-
+                <div onclick="openModal('modal-cap2')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="100"><div class="flex justify-between items-start"><div><p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 2</p><h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">A DESCIDA SEM FREIO</h4><p class="text-sm text-gray-400 leading-relaxed">A jornada no trem e as loucuras que fazemos quando crianças.</p></div><i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i></div><p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p></div>
                 <!-- Cap 3 -->
-                <div onclick="openModal('modal-cap3')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="200">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 3</p>
-                            <h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">LEMBRANÇAS ESCOLARES</h4>
-                            <p class="text-sm text-gray-400 leading-relaxed">Da inocência às primeiras paixões e as brincadeiras da época.</p>
-                        </div>
-                        <i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i>
-                    </div>
-                    <p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p>
-                </div>
-
+                <div onclick="openModal('modal-cap3')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="200"><div class="flex justify-between items-start"><div><p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 3</p><h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">LEMBRANÇAS ESCOLARES</h4><p class="text-sm text-gray-400 leading-relaxed">Da inocência às primeiras paixões e as brincadeiras da época.</p></div><i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i></div><p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p></div>
                 <!-- Cap 4 -->
-                <div onclick="openModal('modal-cap4')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="300">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 4</p>
-                            <h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">O ENCONTRO QUE MUDARIA TUDO</h4>
-                            <p class="text-sm text-gray-400 leading-relaxed">Amor à primeira vista e o início da jornada com a mãe da minha filha.</p>
-                        </div>
-                        <i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i>
-                    </div>
-                    <p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p>
-                </div>
+                <div onclick="openModal('modal-cap4')" class="bg-[#0B0F19] p-6 border-l-4 border-l-gold rounded-r hover:bg-[#111625] transition-all duration-300 cursor-pointer group shadow-md" data-aos="fade-left" data-aos-delay="300"><div class="flex justify-between items-start"><div><p class="text-[10px] text-gold font-bold uppercase mb-2 group-hover:text-white transition-colors">CAPÍTULO 4</p><h4 class="title-hero text-xl mb-2 group-hover:text-gold transition-colors">O ENCONTRO QUE MUDARIA TUDO</h4><p class="text-sm text-gray-400 leading-relaxed">Amor à primeira vista e o início da jornada com a mãe da minha filha.</p></div><i data-lucide="book-open" class="w-6 h-6 text-gold/50 group-hover:text-gold transition-colors"></i></div><p class="text-xs text-gold mt-4 font-bold uppercase tracking-wider flex items-center gap-1">Ler Capítulo <i data-lucide="arrow-right" class="w-4 h-4"></i></p></div>
             </div>
         </div>
 
@@ -684,7 +648,7 @@
                 </div>
 
                 <!-- O botão agora abre o Modal de Checkout -->
-                <div onclick="openCheckout('printed')" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform cursor-pointer text-base py-4 font-bold shadow-lg">
+                <div onclick="checkLoginAndBuy('printed')" id="price-btn" class="btn-primary mb-4 hover:scale-105 transition-transform cursor-pointer text-base py-4 font-bold shadow-lg">
                     QUERO MEU LIVRO FÍSICO!
                 </div>
 
@@ -766,79 +730,55 @@
         <i id="play-icon" data-lucide="play" class="w-4 h-4 text-white ml-2 fill-current"></i>
     </div>
 
-    <!-- MODAL DE CHECKOUT (Integrado com Formspree) -->
-    <div id="modal-checkout" class="checkout-modal">
-        <div class="checkout-container">
-            <div class="checkout-timer">
-                OFERTA EXPIRA EM: <span id="checkout-timer-display">10:00</span>
-            </div>
-            
+    <!-- MODAL DE AUTH (LOGIN/CADASTRO) -->
+    <div id="modal-auth" class="auth-modal">
+        <div class="auth-container">
             <div class="modal-header">
                 <div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">FINALIZAR PEDIDO</p>
-                    <h3 class="text-white font-serif text-xl">DADOS DE COMPRA</h3>
+                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">ÁREA DO LEITOR</p>
+                    <h3 id="auth-title" class="text-white font-serif text-xl">CRIAR CONTA</h3>
                 </div>
-                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-checkout')"></i>
+                <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-auth')"></i>
             </div>
-
-            <div class="checkout-grid">
-                <!-- Coluna Esquerda: Formulário Formspree -->
-                <div class="p-2">
-                    <p class="text-white text-sm mb-4 font-bold">SEUS DADOS (Seguro e Criptografado)</p>
-                    <!-- Formulário integrado com Formspree. O script abaixo fará o redirecionamento sem abrir nova aba -->
-                    <form id="checkout-form" action="https://formspree.io/f/xqajpybz" method="POST">
-                        <input type="hidden" name="Produto" id="form-product-type">
-                        <input type="text" name="Nome" id="checkout-name" placeholder="Nome Completo" class="checkout-input" required>
-                        <input type="email" name="Email" id="checkout-email" placeholder="Seu Melhor E-mail" class="checkout-input" required>
-                        <input type="text" name="CPF" id="checkout-cpf" placeholder="CPF / CNPJ" class="checkout-input" required>
-                        <input type="tel" name="Celular" id="checkout-phone" placeholder="Celular (com DDD)" class="checkout-input" required>
-                        <input type="tel" name="Whatsapp" id="checkout-whatsapp" placeholder="WhatsApp (com DDD)" class="checkout-input" required>
-                        
-                        <!-- Botão de Envio e Redirecionamento -->
-                        <button type="submit" class="btn-primary w-full mt-6 text-base cursor-pointer py-4 font-bold shadow-md hover:shadow-gold/20 border-none">
-                            <i data-lucide="lock" class="w-5 h-5 mr-2"></i> IR PARA PAGAMENTO SEGURO
-                        </button>
-                    </form>
+            <div class="p-6">
+                <form id="auth-form">
+                    <div id="register-fields">
+                        <input type="text" id="auth-name" placeholder="Nome Completo" class="checkout-input" style="border: 1px solid #333;">
+                    </div>
+                    <input type="email" id="auth-email" placeholder="E-mail" class="checkout-input" style="border: 1px solid #333;" required>
+                    <input type="password" id="auth-password" placeholder="Senha (mínimo 6 caracteres)" class="checkout-input" style="border: 1px solid #333;" required>
                     
-                    <div class="flex justify-center gap-4 mt-6 opacity-50 grayscale">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logomarca_Mercado_Pago.png" class="h-6 filter invert brightness-0">
-                        <img src="https://logodownload.org/wp-content/uploads/2019/06/pagseguro-logo-1.png" class="h-6 filter invert brightness-0">
-                    </div>
-                </div>
-
-                <!-- Coluna Direita: Resumo -->
-                <div class="checkout-summary mt-4 md:mt-0">
-                    <p class="text-gold text-xs font-bold uppercase tracking-widest mb-4">RESUMO DO PEDIDO</p>
-                    <div class="flex gap-4 mb-4">
-                        <img src="https://i.postimg.cc/Qt3jvfJK/Screenshot-20250609-161632-2-(1).png" class="w-20 h-28 object-cover rounded border border-gold/30 shadow-md">
-                        <div>
-                            <p id="checkout-product-title" class="text-white text-sm font-bold leading-tight mb-2">Livro Eu Existo Por Você</p>
-                            <p class="text-gray-400 text-xs mb-1">Autor: Ádamo F. Costa</p>
-                            <p class="text-green-500 text-xs font-bold">Em Estoque</p>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-white/10 my-4 pt-4">
-                        <div class="flex justify-between text-sm text-gray-300 mb-2">
-                            <span>Preço:</span>
-                            <span class="line-through" id="checkout-old-price">R$ 109,83</span>
-                        </div>
-                        <div class="flex justify-between text-2xl text-gold font-bold">
-                            <span>Total:</span>
-                            <span id="checkout-price">R$ 64,69</span>
-                        </div>
-                    </div>
-
-                    <div class="secure-badge bg-[#111625] py-3 rounded border border-white/5">
-                        <i data-lucide="shield-check" class="w-5 h-5 text-green-500"></i> 
-                        <span class="text-gray-300 text-xs">Compra 100% Segura</span>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-primary w-full mt-4 text-base font-bold shadow-md">
+                        <span id="auth-btn-text">CRIAR CONTA E CONTINUAR</span>
+                    </button>
+                </form>
+                <p class="text-center text-gray-400 text-xs mt-4 cursor-pointer hover:text-white" onclick="toggleAuthMode()">
+                    <span id="auth-switch-text">Já tem conta? Fazer Login</span>
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- MODAIS DE LEITURA -->
+    <!-- MODAL DE MINHA CONTA -->
+    <div id="modal-account" class="account-modal">
+        <div class="account-container">
+            <div class="modal-header">
+                <div>
+                    <p class="text-gold text-[10px] font-bold uppercase tracking-widest">OLÁ, LEITOR</p>
+                    <h3 class="text-white font-serif text-xl">MEUS PEDIDOS</h3>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="logout()" class="text-red-500 text-xs font-bold hover:text-red-400">SAIR</button>
+                    <i data-lucide="x" class="w-6 h-6 close-btn" onclick="closeModal('modal-account')"></i>
+                </div>
+            </div>
+            <div class="p-6" id="account-content">
+                <p class="text-gray-400 text-center">Carregando seus pedidos...</p>
+            </div>
+        </div>
+    </div>
+
+     <!-- MODAIS DE LEITURA -->
     
     <!-- Modal Introdução -->
     <div id="modal-intro" class="chapter-modal">
@@ -958,10 +898,183 @@
             </div>
         </div>
     </div>
+
     <!-- Biblioteca AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
+        // --- CONFIGURAÇÃO DO FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbdp4ugMhLTcU6z0jxsF865FGwI0ypnEw",
+            authDomain: "eu-existo-por-voce.firebaseapp.com",
+            projectId: "eu-existo-por-voce",
+            storageBucket: "eu-existo-por-voce.firebasestorage.app",
+            messagingSenderId: "107312377850",
+            appId: "1:107312377850:web:a60f415e6d2aeabe90be43"
+        };
+
+        // Inicializa Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        // Funções para backend
+        const functions = firebase.functions(); 
+
+        // --- CONFIGURAÇÃO LINKS MERCADO PAGO ---
+        // Se o usuário estiver logado, o código abaixo chama a função de backend "criarPagamento" 
+        // em vez de usar links fixos, garantindo que o pedido seja criado no banco de dados.
+        
+        let currentUser = null;
+        let currentProductAmount = 64.69;
+        let currentProductName = 'Livro Físico';
+        let isRegistering = true;
+
+        // Verifica estado do login ao carregar
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('btn-account').classList.remove('hidden');
+            } else {
+                currentUser = null;
+                document.getElementById('btn-account').classList.add('hidden');
+            }
+        });
+
+        // Funções de Fluxo de Compra
+        function checkLoginAndBuy(type) {
+            if (type === 'printed') {
+                currentProductAmount = 64.69;
+                currentProductName = "Livro Físico + Audio Book";
+            } else {
+                currentProductAmount = 19.99;
+                currentProductName = "E-book Digital + Audio Book";
+            }
+
+            if (currentUser) {
+                // Já logado: Chama a função do backend para criar pagamento dinâmico
+                createDynamicPayment();
+            } else {
+                // Não logado: Abre modal de cadastro
+                openModal('modal-auth');
+            }
+        }
+
+        function createDynamicPayment() {
+            const createPaymentFunction = functions.httpsCallable('criarPagamento');
+            
+            // Feedback visual de carregamento
+            const btn = document.querySelector('.btn-primary'); 
+            if(btn) btn.innerText = "Processando...";
+
+            createPaymentFunction({
+                product_name: currentProductName,
+                price: currentProductAmount,
+                email: currentUser.email,
+                name: currentUser.displayName || "Cliente"
+            }).then(result => {
+                // Redireciona para o URL de pagamento gerado dinamicamente
+                window.location.href = result.data.url;
+            }).catch(error => {
+                console.error("Erro ao criar pagamento dinâmico: ", error);
+                alert("Erro ao processar pagamento. Tente novamente.");
+                if(btn) btn.innerText = "Tentar Novamente";
+            });
+        }
+
+        // Lógica do Formulário de Auth
+        document.getElementById('auth-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            
+            if (isRegistering) {
+                const name = document.getElementById('auth-name').value;
+                auth.createUserWithEmailAndPassword(email, password).then(cred => {
+                    // Salva dados extras no Firestore
+                    return db.collection('users').doc(cred.user.uid).set({
+                        name: name,
+                        email: email,
+                        role: 'user' // admin ou user
+                    }).then(() => {
+                        cred.user.updateProfile({ displayName: name });
+                        closeModal('modal-auth');
+                        createDynamicPayment(); // Continua o fluxo de compra dinâmico
+                    });
+                }).catch(error => alert("Erro ao criar conta: " + error.message));
+            } else {
+                // Login
+                auth.signInWithEmailAndPassword(email, password).then(() => {
+                    closeModal('modal-auth');
+                    createDynamicPayment(); // Continua o fluxo de compra dinâmico
+                }).catch(error => alert("Erro ao entrar: " + error.message));
+            }
+        });
+
+        function toggleAuthMode() {
+            isRegistering = !isRegistering;
+            const title = document.getElementById('auth-title');
+            const btnText = document.getElementById('auth-btn-text');
+            const switchText = document.getElementById('auth-switch-text');
+            const registerFields = document.getElementById('register-fields');
+
+            if (isRegistering) {
+                title.innerText = "CRIAR CONTA";
+                btnText.innerText = "CRIAR CONTA E CONTINUAR";
+                switchText.innerText = "Já tem conta? Fazer Login";
+                registerFields.style.display = 'block';
+            } else {
+                title.innerText = "FAZER LOGIN";
+                btnText.innerText = "ENTRAR E CONTINUAR";
+                switchText.innerText = "Não tem conta? Criar agora";
+                registerFields.style.display = 'none';
+            }
+        }
+
+        // Área do Cliente
+        function openAccount() {
+            if (!currentUser) return;
+            openModal('modal-account');
+            const content = document.getElementById('account-content');
+            content.innerHTML = '<p class="text-gray-400 text-center">Carregando...</p>';
+
+            // Busca tentativas de checkout no Firestore (criadas pelo backend)
+            db.collection('checkout_attempts')
+                .where('email', '==', currentUser.email)
+                .orderBy('date', 'desc')
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        content.innerHTML = '<p class="text-gray-400 text-center">Você ainda não fez nenhum pedido.</p>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const order = doc.data();
+                        const date = order.date ? new Date(order.date.seconds * 1000).toLocaleDateString() : 'Data pendente';
+                        
+                        html += `
+                            <div class="order-item">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-gold font-bold text-sm">${order.product}</h4>
+                                    <span class="status-badge status-pending">Pedido Iniciado</span>
+                                </div>
+                                <p class="text-gray-400 text-xs">Valor: R$ ${order.price}</p>
+                                <p class="text-gray-400 text-xs">Data: ${date}</p>
+                            </div>
+                        `;
+                    });
+                    content.innerHTML = html;
+                });
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                closeModal('modal-account');
+                alert("Você saiu da conta.");
+            });
+        }
+
         // Inicialização do AOS
         AOS.init({
             once: true, 
@@ -971,7 +1084,7 @@
 
         lucide.createIcons();
         
-        // Lógica da Música (Link Github Definitivo)
+        // Lógica da Música
         const bgMusic = document.getElementById('bg-music');
         const floatingPlayer = document.getElementById('floating-player');
         const musicStatus = document.getElementById('music-status');
@@ -1007,19 +1120,9 @@
             }
         }, { once: true }); 
 
-        // --- CONFIGURAÇÃO DOS LINKS DE PAGAMENTO ---
-        // Substitua os links abaixo pelos seus links reais do Mercado Pago ou PagSeguro
-        const paymentLinks = {
-            printed: "https://link-do-mercado-pago-livro-fisico.com", 
-            ebook: "https://link-do-mercado-pago-ebook.com"         
-        };
-        
-        let currentProductType = 'printed'; // Estado inicial
-
         // Lógica de Preços (Abas)
         function switchPrice(type) {
-            currentProductType = type; 
-            
+            currentProduct = type;
             document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + type).classList.add('active');
 
@@ -1028,14 +1131,14 @@
             const priceCurrent = document.getElementById('price-current');
             const priceFeatures = document.getElementById('price-features');
             const priceBtn = document.getElementById('price-btn');
-
-            // Atualiza o evento onclick do botão para abrir o checkout certo
-            priceBtn.setAttribute('onclick', `openCheckout('${type}')`);
+            
+            // Atualiza botão de compra com a nova função
+            priceBtn.setAttribute('onclick', `checkLoginAndBuy('${type}')`);
 
             if (type === 'printed') {
                 priceTitle.innerText = "LIVRO FÍSICO (CAPA FLEXÍVEL) + AUDIO BOOK";
                 priceOld.innerText = "109,83";
-                priceCurrent.innerText = "64,69"; // Preço Atualizado
+                priceCurrent.innerText = "64,69";
                 priceBtn.innerText = "QUERO MEU LIVRO FÍSICO!";
                 
                 priceFeatures.innerHTML = `
@@ -1059,7 +1162,7 @@
             }
             lucide.createIcons();
         }
-
+        
         switchPrice('printed');
 
         function switchTab(store, url, btnText) {
@@ -1077,97 +1180,6 @@
             btnLink.href = url;
         }
 
-        // Lógica do Modal de Checkout
-        let checkoutTimer;
-        
-        function startCheckoutTimer() {
-            let duration = 60 * 10; 
-            const display = document.querySelector('#checkout-timer-display');
-            
-            clearInterval(checkoutTimer);
-            checkoutTimer = setInterval(function () {
-                let minutes = parseInt(duration / 60, 10);
-                let seconds = parseInt(duration % 60, 10);
-
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                display.textContent = minutes + ":" + seconds;
-
-                if (--duration < 0) {
-                    duration = 0;
-                    clearInterval(checkoutTimer);
-                }
-            }, 1000);
-        }
-
-        function openCheckout(type) {
-            currentProductType = type;
-            const modal = document.getElementById('modal-checkout');
-            const productTitle = document.getElementById('checkout-product-title');
-            const productPrice = document.getElementById('checkout-price');
-            const productOldPrice = document.getElementById('checkout-old-price');
-            
-            // Atualiza campo oculto do formulário
-            document.getElementById('form-product-type').value = (type === 'printed' ? 'Livro Impresso' : 'E-book Digital');
-
-            if (type === 'printed') {
-                productTitle.innerText = "Livro Impresso (Capa Flexível) + Audio Book";
-                productPrice.innerText = "R$ 64,69";
-                productOldPrice.innerText = "R$ 109,83";
-            } else {
-                productTitle.innerText = "E-book Completo (PDF/EPUB) + Audio Book";
-                productPrice.innerText = "R$ 19,99";
-                productOldPrice.innerText = "R$ 39,99";
-            }
-
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('open');
-                startCheckoutTimer(); 
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Interceptar envio do formulário e fazer envio silencioso com redirecionamento
-        const form = document.getElementById('checkout-form');
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Impede o envio padrão do navegador
-
-            const button = form.querySelector('button');
-            const originalText = button.innerHTML;
-            button.disabled = true;
-            button.innerHTML = "Processando..."; // Feedback visual
-
-            const formData = new FormData(form);
-
-            try {
-                // Envio AJAX (silencioso) para o Formspree
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    // Sucesso! Redireciona para o pagamento na mesma aba
-                    const finalLink = currentProductType === 'printed' ? paymentLinks.printed : paymentLinks.ebook;
-                    window.location.href = finalLink;
-                } else {
-                    alert("Ocorreu um erro ao processar seus dados. Tente novamente.");
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert("Ocorreu um erro de conexão. Tente novamente.");
-                button.disabled = false;
-                button.innerHTML = originalText;
-            }
-        });
-
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.style.display = 'flex';
@@ -1184,23 +1196,24 @@
                 modal.style.display = 'none';
             }, 300);
             document.body.style.overflow = 'auto';
-            
-            if(modalId === 'modal-checkout') {
-                clearInterval(checkoutTimer);
-            }
         }
 
         window.onclick = function(event) {
-            if (event.target.classList.contains('chapter-modal') || event.target.classList.contains('checkout-modal')) {
+            if (event.target.classList.contains('chapter-modal') || 
+                event.target.classList.contains('auth-modal') || 
+                event.target.classList.contains('account-modal')) {
                 closeModal(event.target.id);
             }
         }
 
         // Máscaras
         document.addEventListener('DOMContentLoaded', function () {
-            const phoneMask = IMask(document.getElementById('checkout-phone'), { mask: '(00) 00000-0000' });
-            const whatsappMask = IMask(document.getElementById('checkout-whatsapp'), { mask: '(00) 00000-0000' });
-            const cpfMask = IMask(document.getElementById('checkout-cpf'), { mask: '000.000.000-00' });
+            if(document.getElementById('auth-phone')) {
+                 IMask(document.getElementById('auth-phone'), { mask: '(00) 00000-0000' });
+            }
+            if(document.getElementById('auth-cpf')) {
+                 IMask(document.getElementById('auth-cpf'), { mask: '000.000.000-00' });
+            }
         });
     </script>
 </body>
